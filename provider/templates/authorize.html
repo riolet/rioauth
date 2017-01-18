@@ -1,0 +1,16 @@
+$def with (username, appname)
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Authorization</title>
+</head>
+<body>
+<h1>Log in to $appname as $username.title()?</h1>
+<form method="POST" action="/authorize">
+  <input type="hidden" name="approved" value="yes"/>
+  <input type="submit" value="Authorize"/>
+</form>
+<a href="/logout">Different user</a>
+</body>
+</html>

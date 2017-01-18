@@ -1,2 +1,1 @@
-# webpy-oauth
-oauth-based authentication server
+# oauth-test
