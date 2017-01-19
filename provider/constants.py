@@ -8,11 +8,12 @@ DBFILENAME = 'dev.db'
 sys.path.append(BASE_PATH)
 
 urls = (
-    '/', 'Home',
-    '/login', 'Login',
-    '/logout', 'Logout',
-    '/authorize', 'Authorize',
-    '/token', 'Token',
+    '/', 'pages.account.Account',
+    '/login', 'pages.login.Login',
+    '/register', 'pages.register.Register',
+    '/logout', 'page.logout.Logout',
+    '/authorize', 'pages.authorize.Authorize',
+    '/token', 'pages.token.Token',
 )
 
 REMEMBER_COOKIE_NAME = "rememberme"

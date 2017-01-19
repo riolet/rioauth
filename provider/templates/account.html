@@ -1,0 +1,29 @@
+$def with (user)
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Home page</title>
+</head>
+<body>
+<h1>You are logged in as $user['name'].title().</h1>
+$if user['subscriptions']:
+  <p>You have access to:</p>
+  <ul>
+    $for sub in user['subscriptions']:
+      <li>$sub['nicename']</li>
+  </ul>
+$if user['apps']:
+  <p>You have are owner of:</p>
+  <ul>
+    $for app in user['apps']:
+      <li>$app['nicename']
+        <ul>
+          <li>client_id: $app['app_id']</li>
+          <li>client_secret: $app['secret_key']</li>
+        </ul>
+      </li>
+  </ul>
+<a href="/logout">Logout</a>
+</body>
+</html>

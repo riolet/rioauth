@@ -91,6 +91,8 @@ class Users(object):
         }
         rows = self.db.select(self.table, where="email=$email", vars=qvars, limit=1)
         user = rows.first()
+        print("USERS::get")
+        print("user is {0}".format(user))
         if user:
             hashed_password = user.password.encode(encoding='utf-8')
             ascii_password = password.encode(encoding='utf-8')
@@ -104,6 +106,14 @@ class Users(object):
             return None
 
     def add(self, email, password, **kwargs):
+        if type(email) == unicode:
+            email = email.encode(encoding='utf-8')
+        if type(password) is unicode:
+            password = password.encode(encoding='utf-8')
+        for k, v in kwargs.iteritems():
+            if type(v) is unicode:
+                kwargs[k] = v.encode(encoding='utf-8')
+
         qvars = {
             "email": email,
         }
