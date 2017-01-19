@@ -3,7 +3,7 @@ import constants
 import common
 
 
-class Admin():
+class Admin:
     def __init__(self):
         self.errors = []
         self.info = []
@@ -16,23 +16,15 @@ class Admin():
         if cookie:
             cookie_parts = cookie.split(":")
             if len(cookie_parts) == 3:
-                uid, token, hash = cookie_parts
-                if common.users.validate_login_cookie(uid, token, hash):
+                uid, token, _hash = cookie_parts
+                if common.users.validate_login_cookie(uid, token, _hash):
                     common.session['logged_in'] = True
                     common.session['user_id'] = uid
                     return uid
         return None
 
-    def get_user_data(self, user_id):
+    def get_user(self, user_id):
         user = dict(common.users.get_by_id(user_id))
-
-        # accessible apps
-        subs = common.subscriptions.get_by_user(user_id)
-        user['subscriptions'] = map(dict, subs)
-
-        # owned apps
-        apps = common.applications.get_by_owner(user_id)
-        user['apps'] = apps
 
         return user
 
@@ -154,7 +146,7 @@ class Admin():
         common.report_init("ADMIN", "GET", data)
 
         user_id = self.get_user_id()
-        user = self.get_user_data(user_id)
+        user = self.get_user(user_id)
         is_admin = self.is_admin(user)
         if not is_admin:
             raise web.seeother("/")
@@ -166,7 +158,7 @@ class Admin():
         common.report_init("ADMIN", "GET", data)
 
         user_id = self.get_user_id()
-        user = self.get_user_data(user_id)
+        user = self.get_user(user_id)
         is_admin = self.is_admin(user)
         if not is_admin:
             raise web.seeother("/")
@@ -193,5 +185,4 @@ class Admin():
             self.delete_sub(data)
 
         return self.render_page(user)
-
         

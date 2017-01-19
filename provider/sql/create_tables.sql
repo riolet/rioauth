@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS Users
 , password          CHAR(60) NOT NULL
 , secret_key        CHAR(32)
 , remember_token    CHAR(32)
-, groups            TEXT
+, groups            TEXT DEFAULT ""
 , name              TEXT
 , last_access       INTEGER DEFAULT (strftime('%s', 'now'))
 );

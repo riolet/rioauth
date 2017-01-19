@@ -19,6 +19,10 @@ class Account(object):
                     return uid
         return None
 
+    def is_admin(self, user):
+        groups = user['groups'].split(' ')
+        return 'admin' in groups
+
     def get_user_data(self, user_id):
         user = dict(common.users.get_by_id(user_id))
 
@@ -37,10 +41,10 @@ class Account(object):
         common.report_init("HOME", "GET", data)
 
         user_id = self.get_user_id()
-        print("get_user_id returned {0} ({0.__class__})".format(user_id))
         is_logged_in = bool(user_id)
         if is_logged_in:
             user = self.get_user_data(user_id)
-            return common.render.account(user)
+            admin = self.is_admin(user)
+            return common.render.account(user, admin)
         else:
             raise web.seeother("/login")
