@@ -10,6 +10,7 @@ sys.path.append(BASE_PATH)
 urls = (
     '/', 'pages.account.Account',
     '/login', 'pages.login.Login',
+    '/admin', 'pages.admin.Admin',
     '/register', 'pages.register.Register',
     '/logout', 'pages.logout.Logout',
     '/authorize', 'pages.authorize.Authorize',

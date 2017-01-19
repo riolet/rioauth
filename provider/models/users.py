@@ -6,6 +6,7 @@ import binascii
 import hmac
 import base64
 import math
+from datetime import datetime
 
 
 def b64_url_encode(bytes):
@@ -79,6 +80,13 @@ class Users(object):
         rows = self.db.select(self.table, where='id=$aid', vars=qvars, limit=1)
         user = rows.first()
         return user
+
+    def get_all(self):
+        date_format = '%Y-%m-%d %H:%M:%S'
+        rows = list(self.db.select(self.table, what="id, email, groups, name, last_access"))
+        for row in rows:
+            row['last_access'] = datetime.fromtimestamp(row['last_access']).strftime(date_format)
+        return rows
 
     def get(self, email, password):
         """

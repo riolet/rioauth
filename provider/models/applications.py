@@ -57,6 +57,10 @@ class Applications(object):
         rows = self.db.select(self.table, where="owner_id=$uid", vars=qvars)
         return list(rows)
 
+    def get_all(self):
+        rows = self.db.select(self.table, what="app_id, owner_id, nicename, scopes, redirect_uris, default_scopes, default_redirect_uri")
+        return list(rows)
+
     def get(self, application_id):
         """
         :param application_id: unique id to search for

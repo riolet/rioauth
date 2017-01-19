@@ -3,27 +3,77 @@ $def with (user)
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <link rel="stylesheet" type="text/css" href="/static/css/semantic.min.css">
+  <script src="/static/js/jquery-3.1.0.min.js"></script>
+  <script src="/static/js/semantic.min.js"></script>
   <title>Home page</title>
+  <style type="text/css">
+body {
+  background-color: #DADADA;
+}
+.ui.menu .item img.logo {
+  margin-right: 1.5em;
+}
+.main.container {
+  margin-top: 7em;
+}
+  </style>
 </head>
 <body>
-<h1>You are logged in as $user['name'].title().</h1>
-$if user['subscriptions']:
-  <p>You have access to:</p>
-  <ul>
-    $for sub in user['subscriptions']:
-      <li>$sub['nicename']</li>
-  </ul>
-$if user['apps']:
-  <p>You have are owner of:</p>
-  <ul>
-    $for app in user['apps']:
-      <li>$app['nicename']
+
+<!-- Header Menu -->
+<div class="ui fixed menu">
+  <div class="ui container">
+    <a href="/" class="header item">
+      <img class="logo" src="static/img/logo.png">
+      -&nbsp;-
+    </a>
+    <a href="#" class="item">Home</a>
+    <div class="ui simple float right dropdown item">
+      <i class="user icon"></i>
+      $user['name']
+      <i class="dropdown icon"></i>
+      <div class="menu">
+        <a class="item" href="/logout">Log out</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- User info -->
+<div class="ui main text container">
+  <h1 class="ui header">You are logged in as $user['name'].title().</h1>
+  <div class="ui segments">
+    <div class="ui green segment">
+      $if user['subscriptions']:
+        <p>You have access to:</p>
         <ul>
-          <li>client_id: $app['app_id']</li>
-          <li>client_secret: $app['secret_key']</li>
+          $for sub in user['subscriptions']:
+            <li>$sub['nicename']</li>
         </ul>
-      </li>
-  </ul>
-<a href="/logout">Logout</a>
+      $else:
+        <p>You are not connected to any apps.</p>
+    </div>
+    $if user['apps']:
+      <div class="ui blue segment">
+        <p>You have are owner of:</p>
+        <ul>
+          $for app in user['apps']:
+            <li>$app['nicename']
+              <ul>
+                <li>client_id: $app['app_id']</li>
+                <li>client_secret: $app['secret_key']</li>
+              </ul>
+            </li>
+        </ul>
+      </div>
+    <div class="ui red segment">
+      <a href="/logout">Logout</a>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>

@@ -22,6 +22,10 @@ class Subscriptions(object):
         rows = self.db.select(self.table, where="app_id=$aid and user_id=$uid", vars=qvars)
         return rows.first()
 
+    def get_all(self):
+        rows = self.db.select(self.table, what="subscription_id, app_id, user_id, subscription_type")
+        return list(rows)
+
     def add(self, app_id, user_id, subscription_type):
         exists = self.get(app_id, user_id)
         if exists:

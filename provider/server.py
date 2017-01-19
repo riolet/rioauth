@@ -19,9 +19,5 @@ CherryPyWSGIServer.ssl_private_key = "./localhost.key"
 app = web.application(constants.urls, globals())
 common.session = web.session.Session(app, common.session_store)
 
-
-
-
-
 if __name__ == "__main__":
     app.run()
