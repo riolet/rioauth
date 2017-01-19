@@ -43,10 +43,10 @@ body {
   </div>
 </div>
 
-<!-- User info -->
 <div class="ui main container">
   <h1 class="ui header">Admin controls</h1>
 
+  <!-- User info -->
   <div class="ui segments">
     <div class="ui segment">
       <h2 class="ui header">Users</h2>
@@ -73,7 +73,44 @@ body {
         <p>No user records found.</p>
     </div>
     <div class="ui green segment">
-      <p>Add user</p>
+      <div class="ui accordion">
+        <div class="title">
+          <i class="dropdown icon"></i>
+          Add User
+        </div>
+        <div class="content">
+          <form class="ui form" method="POST" action="/admin">
+            <input type="hidden" name="action" value="add_user">
+            <div class="field">
+              <div class="ui left icon input">
+                <i class="user icon"></i>
+                <input type="text" name="name" placeholder="Name">
+              </div>
+            </div>
+            <div class="field">
+              <div class="ui left icon input">
+                <i class="mail icon"></i>
+                <input type="text" name="email" placeholder="E-mail address">
+              </div>
+            </div>
+            <div class="field">
+              <div class="ui left icon input">
+                <i class="lock icon"></i>
+                <input type="password" name="password" placeholder="Password">
+              </div>
+            </div>
+            <div class="field">
+              <div class="ui left icon input">
+                <i class="users icon"></i>
+                <input type="text" name="groups" placeholder="Groups">
+              </div>
+            </div>
+            <div class="field">
+              <button class="ui green button" type="submit">ADD</button>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
     <div class="ui red segment">
       <div class="ui accordion">
@@ -99,6 +136,7 @@ body {
     </div>
   </div>
 
+  <!-- Application info -->
   <div class="ui segments">
     <div class="ui segment">
       <h2 class="ui header">Apps</h2>
@@ -125,7 +163,56 @@ body {
         <p>No web apps found.</p>
     </div>
     <div class="ui green segment">
-      <p>Add App</p>
+      <div class="ui accordion">
+        <div class="title">
+          <i class="dropdown icon"></i>
+          Add Application
+        </div>
+        <div class="content">
+          <form class="ui form" method="POST" action="/admin">
+            <input type="hidden" name="action" value="add_app">
+            <div class="field">
+              <div class="ui left icon input">
+                <i class="write icon"></i>
+                <input type="text" name="nicename" placeholder="Name">
+              </div>
+            </div>
+            <div class="field">
+              <div class="ui left icon input">
+                <i class="user icon"></i>
+                <input type="text" name="owner_id" placeholder="Owner ID">
+              </div>
+            </div>
+            <div class="field">
+              <div class="ui left icon input">
+                <i class="users icon"></i>
+                <input type="text" name="scopes" placeholder="Scopes">
+              </div>
+            </div>
+            <div class="field">
+              <div class="ui left icon input">
+                <i class="users icon"></i>
+                <input type="text" name="def_scopes" placeholder="Default Scopes">
+              </div>
+            </div>
+            <div class="field">
+              <div class="ui left icon input">
+                <i class="external icon"></i>
+                <input type="text" name="uris" placeholder="Redirect URIs">
+              </div>
+            </div>
+            <div class="field">
+              <div class="ui left icon input">
+                <i class="external icon"></i>
+                <input type="text" name="def_uri" placeholder="Default Redirect URI">
+              </div>
+            </div>
+            <div class="field">
+              <button class="ui green button" type="submit">ADD</button>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
     <div class="ui red segment">
       <div class="ui accordion">
@@ -151,6 +238,7 @@ body {
     </div>
   </div>
 
+  <!-- Subscription info -->
   <div class="ui segments">
     <div class="ui segment">
       <h2 class="ui header">Subscriptions</h2>
@@ -177,7 +265,38 @@ body {
         <p>No subscriptions found.</p>
     </div>
     <div class="ui green segment">
-      <p>Add Subscription</p>
+      <div class="ui accordion">
+        <div class="title">
+          <i class="dropdown icon"></i>
+          Add Subscription
+        </div>
+        <div class="content">
+          <form class="ui form" method="POST" action="/admin">
+            <input type="hidden" name="action" value="add_sub">
+            <div class="field">
+              <div class="ui left icon input">
+                <i class="cube icon"></i>
+                <input type="text" name="app_id" placeholder="App ID">
+              </div>
+            </div>
+            <div class="field">
+              <div class="ui left icon input">
+                <i class="user icon"></i>
+                <input type="text" name="user_id" placeholder="User ID">
+              </div>
+            </div>
+            <div class="field">
+              <div class="ui left icon input">
+                <i class="write icon"></i>
+                <input type="text" name="type" placeholder="Subscription Type">
+              </div>
+            </div>
+            <div class="field">
+              <button class="ui green button" type="submit">ADD</button>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
     <div class="ui red segment">
       <div class="ui accordion">
@@ -187,7 +306,7 @@ body {
         </div>
         <div class="content">
           <form class="ui form" method="POST" action="/admin">
-            <input type="hidden" name="action" value="delete_app">
+            <input type="hidden" name="action" value="delete_sub">
             <div class="two fields">
               <div class="field">
                 <input id="del_sub_id" name="sub_id" type="number" placeholder="subscription_id">
