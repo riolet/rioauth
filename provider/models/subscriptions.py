@@ -26,6 +26,13 @@ class Subscriptions(object):
         rows = self.db.select(self.table, what="subscription_id, app_id, user_id, subscription_type")
         return list(rows)
 
+    def delete(self, sub_id):
+        qvars = {
+            'sid': sub_id
+        }
+        dels = self.db.delete(self.table, where='subscription_id=$sid', vars=qvars)
+        return dels == 1
+
     def add(self, app_id, user_id, subscription_type):
         exists = self.get(app_id, user_id)
         if exists:

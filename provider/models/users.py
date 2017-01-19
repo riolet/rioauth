@@ -53,6 +53,13 @@ class Users(object):
         cookie_text = "{0}:{1}".format(cookie_text, ascii_hash)
         return cookie_text
 
+    def delete(self, user_id):
+        qvars = {
+            'uid': user_id
+        }
+        dels = self.db.delete(self.table, where='id=$uid', vars=qvars)
+        return dels == 1
+
     def validate_login_cookie(self, user_id, token, cookie_hash):
         """
         Validate a "remember me" cookie meant to keep a user logged in.

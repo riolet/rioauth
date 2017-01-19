@@ -1,4 +1,4 @@
-$def with (admin, users, apps, subs)
+$def with (admin, users, apps, subs, errors, info)
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -44,6 +44,18 @@ body {
 </div>
 
 <div class="ui main container">
+  <!-- Message boxes-->
+  $if len(info) > 0:
+    <div class="ui success message">
+      $for msg in info:
+        <p>$msg</p>
+    </div>
+  $if len(errors) > 0:
+    <div class="ui error message">
+      $for msg in errors:
+        <p>$msg</p>
+    </div>
+
   <h1 class="ui header">Admin controls</h1>
 
   <!-- User info -->

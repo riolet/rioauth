@@ -73,6 +73,13 @@ class Applications(object):
         app = rows.first()
         return app
 
+    def delete(self, app_id):
+        qvars = {
+            'aid': app_id
+        }
+        dels = self.db.delete(self.table, where='app_id=$aid', vars=qvars)
+        return dels == 1
+
     def add(self, name, owner_id, scopes, redirect_uris, default_scopes=None, default_redirect_uri=None):
         """
         :param name: string; nice name for app
@@ -90,7 +97,7 @@ class Applications(object):
             'redirect_uris': " ".join(redirect_uris)
         }
         if default_scopes:
-            qvars['default_scopes'] = default_scopes
+            qvars['default_scopes'] = " ".join(default_scopes)
         if default_redirect_uri:
             qvars['default_redirect_uri'] = default_redirect_uri
 
