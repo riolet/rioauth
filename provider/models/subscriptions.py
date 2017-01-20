@@ -45,7 +45,7 @@ class Subscriptions(object):
         return rows.first()
 
     def get_all(self):
-        rows = self.db.select(self.table, what="subscription_id, app_id, user_id, subscription_type")
+        rows = self.db.select(self.table, what="subscription_id, app_id, user_id, status, subscription_type")
         return list(rows)
 
     def delete(self, sub_id):
