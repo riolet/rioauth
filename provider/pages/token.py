@@ -11,7 +11,7 @@ class Token(object):
     def GET(self):
         data = web.input()
         common.report_init("TOKEN", "GET", data)
-        print("Error. POST expected.")
+        print("Error. POST method expected.")
         return common.render.dummy()
 
     def POST(self):

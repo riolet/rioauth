@@ -85,12 +85,17 @@ class Private(object):
         report_init("PRIVATE", "GET", session, data)
 
         # if the user is already logged in, just show them the page
-        if session.get('logged_in', False) is True:
-            return render.private_page()
+        if session.get('logged_in', False) is not True:
+            # send back to public page
+            print("redirecting to /public")
+            raise web.seeother("/public")
 
-        # send back to public page
-        print("redirecting to /public")
-        raise web.seeother("/public")
+        #request a resource with the token
+        response = self.oauth.request("https://auth.local:8081/resource")
+        message = repr(response)
+
+        # finally, render the page
+        return render.private_page(message)
 
     def POST(self):
         data = web.input()

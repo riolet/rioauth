@@ -75,6 +75,7 @@ class Authorization(object):
             self.client_id, redirect_uri=redirect_uri, scope=scope
         )
 
+        # TODO: re-enable verify (for SSL)
         token = oauth.fetch_token(
             self.token_url,
             authorization_response=authorization_response_url,
@@ -89,16 +90,14 @@ class Authorization(object):
             'client_id': self.client_id,
             'client_secret': self.client_secret
         }
+        # TODO: re-enable verify (for SSL)
         oauth = requests_oauthlib.OAuth2Session(
             self.client_id,
             token=self.get_token(),
             auto_refresh_url=self.token_url,
             auto_refresh_kwargs = extra,
-            token_updater = self.save_token)
+            token_updater = self.save_token,
+            verify = False)
 
         r = oauth.get(protected_url)
         return r
-
-    def has_valid_token(self):
-        #TODO: contact server, validate token
-        return True

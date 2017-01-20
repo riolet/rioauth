@@ -77,7 +77,6 @@ class MyRequestValidator(RequestValidator):
 
     def authenticate_client(self, request, *args, **kwargs):
         # Whichever authentication method suits you, HTTP Basic might work
-        # TODO: generate secret for each client app. Use app id and secret to authenticate client.
         # see https://github.com/evonove/django-oauth-toolkit/blob/master/oauth2_provider/oauth2_validators.py#L51
         print("authenticate_client")
         authenticated = True
