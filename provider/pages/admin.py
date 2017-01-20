@@ -155,7 +155,7 @@ class Admin:
 
     def POST(self):
         data = web.input()
-        common.report_init("ADMIN", "GET", data)
+        common.report_init("ADMIN", "POST", data)
 
         user_id = self.get_user_id()
         user = self.get_user(user_id)

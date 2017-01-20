@@ -1,3 +1,6 @@
+//global, filled by server on page
+var server_errors;
+
 $(document)
 .ready(function() {
   $('.ui.form')

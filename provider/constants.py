@@ -12,6 +12,7 @@ urls = (
     '/login', 'pages.login.Login',
     '/admin', 'pages.admin.Admin',
     '/register', 'pages.register.Register',
+    '/subscribe', 'pages.subscribe.Subscribe',
     '/logout', 'pages.logout.Logout',
     '/authorize', 'pages.authorize.Authorize',
     '/token', 'pages.token.Token',

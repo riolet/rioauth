@@ -4,22 +4,27 @@ import common
 
 
 class Account(object):
-    def get_user_id(self):
-        if "logged_in" in common.session and common.session['logged_in'] is True and "user_id" in common.session:
-            return common.session['user_id']
+    def __init__(self):
+        self.data = web.input()
+        self.user_id = None
+        self.user_data = None
+        self.is_admin = False
 
-        cookie = web.cookies().get(constants.REMEMBER_COOKIE_NAME)
-        if cookie:
-            cookie_parts = cookie.split(":")
-            if len(cookie_parts) == 3:
-                uid, token, hash = cookie_parts
-                if common.users.validate_login_cookie(uid, token, hash):
-                    common.session['logged_in'] = True
-                    common.session['user_id'] = uid
-                    return uid
-        return None
+    def is_logged_in(self):
+        if 'logged_in' in common.session and 'user_id' in common.session and common.session['logged_in'] is True:
+            self.user_id = common.session['user_id']
+            return True
+        else:
+            return False
 
-    def is_admin(self, user):
+    def require_login(self, return_uri):
+        if not self.is_logged_in():
+            common.session['login_redirect'] = return_uri
+            raise web.seeother("/login")
+        else:
+            common.session.pop('login_redirect', None)
+
+    def is_user_admin(self, user):
         groups = user['groups'].split(' ')
         return 'admin' in groups
 
@@ -31,20 +36,30 @@ class Account(object):
         user['subscriptions'] = map(dict, subs)
 
         # owned apps
-        apps = common.applications.get_by_owner(user_id)
+        apps = common.applications.get_all_by_owner(user_id)
         user['apps'] = apps
 
         return user
 
     def GET(self):
-        data = web.input()
-        common.report_init("HOME", "GET", data)
+        common.report_init("HOME", "GET", self.data)
+        self.require_login("/")
 
-        user_id = self.get_user_id()
-        is_logged_in = bool(user_id)
-        if is_logged_in:
-            user = self.get_user_data(user_id)
-            admin = self.is_admin(user)
-            return common.render.account(user, admin)
-        else:
-            raise web.seeother("/login")
+        self.user_data = self.get_user_data(self.user_id)
+        self.is_admin = self.is_user_admin(self.user_data)
+
+        return common.render.account(self.user_data, self.is_admin)
+
+    def POST(self):
+        common.report_init("HOME", "POST", self.data)
+        self.require_login("/")
+
+        if 'enable_sub' in self.data:
+            common.subscriptions.set_status(self.data['enable_sub'], self.user_id, "active")
+        if 'disable_sub' in self.data:
+            common.subscriptions.set_status(self.data['disable_sub'], self.user_id, "inactive")
+
+        self.user_data = self.get_user_data(self.user_id)
+        self.is_admin = self.is_user_admin(self.user_data)
+
+        return common.render.account(self.user_data, self.is_admin)

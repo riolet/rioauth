@@ -154,6 +154,12 @@ class Login(object):
                 print("get_token returned False. setting logged_in to False")
                 session['logged_in'] = False
                 raise web.seeother('/public')
+        elif 'error' in data:
+            print("Error response.\n\t{0}".format(data['error']))
+            if 'error_description' in data:
+                print("\t{0}".format(data['error_description']))
+            # TODO: have destination page indicate to user that an error has occurred.
+            raise web.seeother('/public')
         else:
             print("begin authentication process.")
             self.get_auth_code()

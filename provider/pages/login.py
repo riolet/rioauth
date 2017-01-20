@@ -61,5 +61,5 @@ class Login(object):
         if 'login_redirect' in common.session:
             destination = common.session['login_redirect']
         print("redirecting to {0}".format(destination))
-        web.seeother(destination)
+        raise web.seeother(destination)
 

@@ -19,6 +19,10 @@ body {
 .main.container {
   margin-top: 7em;
 }
+form {
+  display: inline;
+  margin-left: 2em;
+}
   </style>
 </head>
 <body>
@@ -54,7 +58,22 @@ body {
         <p>You have access to:</p>
         <ul>
           $for sub in user['subscriptions']:
-            <li>$sub['nicename']</li>
+            $if sub['status'] == 'active':
+              $if 'default_redirect_uri' in sub and len(sub['default_redirect_uri']) > 0:
+                <li><a href="$sub['default_redirect_uri']">$sub['nicename']</a>
+              $else:
+                <li>$sub['nicename']
+              <form method="POST" action="/">
+                <input type="hidden" name="disable_sub", value="$sub['subscription_id']">
+                <button class="ui compact basic button" type="submit">Deactivate</button>
+              </form></li>
+            $else:
+              <li><span class="disabled">$sub['nicename']</span>
+                <form method="POST" action="/">
+                  <input type="hidden" name="enable_sub", value="$sub['subscription_id']">
+                  <button class="ui compact basic button" type="submit">Reactivate</button>
+                </form>
+              </li>
         </ul>
       $else:
         <p>You are not connected to any apps.</p>

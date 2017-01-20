@@ -50,7 +50,7 @@ class Applications(object):
         app = rows.first()
         return app is not None
 
-    def get_by_owner(self, user_id):
+    def get_all_by_owner(self, user_id):
         qvars = {
             'uid': user_id
         }

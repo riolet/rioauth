@@ -7,12 +7,34 @@ class Subscriptions(object):
         qvars = {
             'uid': user_id
         }
-        query = """SELECT `S`.app_id, user_id, subscription_id, subscription_type, nicename
+        query = """SELECT `S`.app_id, user_id, subscription_id, subscription_type, status, nicename, default_redirect_uri
         FROM Subscriptions `S` JOIN Applications `A`
             ON `S`.app_id = `A`.app_id
         WHERE `S`.user_id = $uid OR `A`.owner_id = $uid"""
         rows = self.db.query(query, vars=qvars)
         return list(rows)
+
+    def set_status(self, sub_id, user_id, status):
+        if status not in ['active', 'inactive']:
+            return -1
+
+        qvars = {
+            'sid': sub_id,
+            'uid': user_id
+        }
+
+        return self.db.update(self.table, "subscription_id=$sid and user_id=$uid", status=status, vars=qvars)
+
+    def set_status_by_app_user(self, app_id, user_id, status):
+        if status not in ['active', 'inactive']:
+            return -1
+
+        qvars = {
+            'aid': app_id,
+            'uid': user_id
+        }
+
+        return self.db.update(self.table, "app_id=$aid and user_id=$uid", status=status, vars=qvars)
 
     def get(self, app_id, user_id):
         qvars = {
