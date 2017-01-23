@@ -17,6 +17,8 @@ urls = (
     '/authorize', 'pages.authorize.Authorize',
     '/token', 'pages.token.Token',
     '/resource', 'pages.resource.Resource',
+    '/resetpassword', 'pages.resetpassword.ResetPassword',
+    '/changepassword', 'pages.changepassword.ChangePassword',
 )
 
 REMEMBER_COOKIE_NAME = "rememberme"

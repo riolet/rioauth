@@ -1,29 +1,10 @@
 import time
-import os
 import bcrypt
 import hashlib
 import binascii
 import hmac
-import base64
-import math
 from datetime import datetime
-
-
-def b64_url_encode(bytes):
-    return base64.b64encode(bytes, "-_")
-
-
-def generate_salt(length):
-    """
-    Generate a cryptographically secure random base64 code of the desired length
-    :param length: The desired output string length
-    :return: A base64 encoded salt
-    """
-    # base64 stores 6 bits per symbol but os.urandom gives 8 bits per symbol
-    bytes_needed = int(math.ceil(length * 6.0 / 8.0))
-    bytes = os.urandom(bytes_needed)
-    encoded = b64_url_encode(bytes)
-    return encoded[:length]
+import common
 
 
 class Users(object):
@@ -44,8 +25,8 @@ class Users(object):
         self.db.update(self.table, "email=$email", vars=qvars, last_access=now)
 
     def get_login_cookie(self, user_id):
-        token = generate_salt(32)
-        secret_key = generate_salt(32)
+        token = common.generate_salt(32)
+        secret_key = common.generate_salt(32)
         self.storeRememberToken(user_id, token, secret_key)
         cookie_text = "{0}:{1}".format(user_id, token)
         dk = hashlib.pbkdf2_hmac('sha256', cookie_text, secret_key, 100000)

@@ -1,12 +1,20 @@
 CREATE TABLE IF NOT EXISTS Users
 ( id                INTEGER PRIMARY KEY
 , email             TEXT UNIQUE
+, email_confirmed   CHAR(1) DEFAULT '0'
 , password          CHAR(60) NOT NULL
 , secret_key        CHAR(32)
 , remember_token    CHAR(32)
 , groups            TEXT DEFAULT ""
 , name              TEXT
 , last_access       INTEGER DEFAULT (strftime('%s', 'now'))
+);
+
+CREATE TABLE IF NOT EXISTS EmailLoopback
+( user_id           INTEGER NOT NULL
+, secret_key        CHAR(64) UNIQUE
+, redirect_uri      TEXT
+, expiration_time   INTEGER DEFAULT (strftime('%s','now') + 600)
 );
 
 -- subscription type could be a foreign key to a subtable with specific billing/access information

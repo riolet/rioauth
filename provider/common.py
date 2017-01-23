@@ -9,6 +9,7 @@ from models.subscriptions import Subscriptions
 from models.applications import Applications
 from models.authorization_codes import AuthorizationCodes
 from models.bearer_tokens import BearerTokens
+from models.email_loopback import EmailLoopback
 
 
 def b64_url_encode(bytes):
@@ -57,6 +58,7 @@ subscriptions = Subscriptions(_db)
 applications = Applications(_db)
 authorization_codes = AuthorizationCodes(_db)
 bearer_tokens = BearerTokens(_db)
+email_loopback = EmailLoopback(_db)
 
 render = web.template.render(os.path.join(constants.BASE_PATH, 'templates'))
 
