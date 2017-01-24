@@ -53,7 +53,11 @@ def response_from_error(e):
 
 
 def sendmail(to_address, subject, body, from_address="info@riolet.com", headers=None, **kw):
-    web.sendmail(from_address, to_address, subject, body, headers=headers, **kw)
+    try:
+        web.sendmail(from_address, to_address, subject, body, headers=headers, **kw)
+    except OSError as e:
+        print("Could not send mail.")
+        print("OSError: {0}".format(e))
 
 _db = dbsetup.get_db()
 users = Users(_db)

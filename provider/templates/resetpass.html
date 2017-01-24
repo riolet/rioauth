@@ -29,25 +29,7 @@ $def with (user, loopback, resend, errors)
             <p>$error</p>
         </div>
       <form class="ui large form" method="POST" action="/resetpassword">
-        $if resend:
-          <input type="hidden" name="intention" value="resend">
-          $if loopback:
-            <input type="hidden" name="user_id" value="$loopback['user_id']">
-            <input type="hidden" name="redirect_uri" value="$loopback['redirect_uri']">
-            <div class="field">
-              <button class="ui fluid teal button" type="submit">Resend password reset email</button>
-            </div>
-          $else:
-            <div class="field">
-              <div class="ui left icon input">
-                <i class="mail icon"></i>
-                <input type="email" name="email" placeholder="Email address">
-              </div>
-            </div>
-            <div class="field">
-              <button class="ui fluid teal button" type="submit">Send password reset email</button>
-            </div>
-        $else:
+        $if loopback and not resend:
           <input type="hidden" name="intention" value="update">
           <input type="hidden" name="key" value="$loopback['secret_key']">
           <div class="field">
@@ -64,6 +46,24 @@ $def with (user, loopback, resend, errors)
           </div>
           <div class="field">
             <button class="ui fluid teal button" type="submit">Update Password</button>
+          </div>
+        $elif loopback and resend:
+          <input type="hidden" name="intention" value="resend">
+          <input type="hidden" name="user_id" value="$loopback['user_id']">
+          <input type="hidden" name="redirect_uri" value="$loopback['redirect_uri']">
+          <div class="field">
+            <button class="ui fluid teal button" type="submit">Resend password reset email</button>
+          </div>
+        $else:
+          <input type="hidden" name="intention" value="resend">
+          <div class="field">
+            <div class="ui left icon input">
+              <i class="mail icon"></i>
+              <input type="email" name="email" placeholder="Email address">
+            </div>
+          </div>
+          <div class="field">
+            <button class="ui fluid teal button" type="submit">Send password reset email</button>
           </div>
       </form>
     </div>

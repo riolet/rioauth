@@ -74,6 +74,7 @@ Riolet Corporation
 """.format(name=name, link=link, duration=(duration // 60))
         print("password reset link is {0}".format(link))
         common.sendmail(email, subject, body)
+        return True
 
     def updatepassword(self):
         self.validate_key()
@@ -120,7 +121,7 @@ Riolet Corporation
             success = self.resend()
             if success:
                 msg = "Please check your email for your password reset link."
-                return common.render.message(success=msg, buttons=[('Login', '/login')])
+                return common.render.message(success=[msg], buttons=[('Login', '/login')])
             else:
                 return common.render.resetpass(self.user, self.loopback, self.offer_resend, self.errors)
 
