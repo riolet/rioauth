@@ -61,6 +61,14 @@ class Users(object):
                 valid = True
         return valid
 
+    def get_by_email(self, email):
+        qvars = {
+            'em': email
+        }
+        rows = self.db.select(self.table, where='email=$em', vars=qvars, limit=1)
+        user = rows.first()
+        return user
+
     def get_by_id(self, account):
         qvars = {
             "aid": account
@@ -123,6 +131,16 @@ class Users(object):
         user_id = self.db.insert(self.table, email=email, password=hashed_password, **kwargs)
 
         return user_id
+
+    def set_password(self, user_id, new_password):
+        qvars = {
+            'uid': user_id
+        }
+
+        hashed_password = bcrypt.hashpw(new_password.encode(encoding='utf-8'), bcrypt.gensalt())
+
+        changes = self.db.update(self.table, 'id=$uid', vars=qvars, password=hashed_password)
+        return changes == 1
 
     def storeRememberToken(self, account_id, token, secret):
         qvars = {

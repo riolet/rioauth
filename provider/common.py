@@ -52,6 +52,9 @@ def response_from_error(e):
     raise web.BadRequest('<h1>Bad Request</h1><p>Error is: {0}</p>'.format(e.description))
 
 
+def sendmail(to_address, subject, body, from_address="info@riolet.com", headers=None, **kw):
+    web.sendmail(from_address, to_address, subject, body, headers=headers, **kw)
+
 _db = dbsetup.get_db()
 users = Users(_db)
 subscriptions = Subscriptions(_db)

@@ -1,6 +1,3 @@
-//global, filled by server on page
-var server_errors;
-
 $(document)
 .ready(function() {
   $('.ui.form')
@@ -45,7 +42,7 @@ $(document)
     })
   ;
 
-  if (server_errors.length > 0) {
+  if (server_errors && server_errors.length > 0) {
     $('.form').form('add errors', server_errors)
   }
 })

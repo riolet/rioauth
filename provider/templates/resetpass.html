@@ -21,14 +21,16 @@ $def with (user, loopback, resend, errors)
       <div class="content">Reset Password</div>
     </h2>
     <div class="ui stacked segment">
-      <p>Reset password for $user['name'].title():</p>
+      $if user:
+        <p>Reset password for $user['name'].title():</p>
       $if len(errors) > 0:
         <div class="ui error message">
-          $for msg in errors:
-            <p>$msg</p>
+          $for error in errors:
+            <p>$error</p>
         </div>
       <form class="ui large form" method="POST" action="/resetpassword">
         $if resend:
+          <input type="hidden" name="intention" value="resend">
           $if loopback:
             <input type="hidden" name="user_id" value="$loopback['user_id']">
             <input type="hidden" name="redirect_uri" value="$loopback['redirect_uri']">
@@ -46,6 +48,7 @@ $def with (user, loopback, resend, errors)
               <button class="ui fluid teal button" type="submit">Send password reset email</button>
             </div>
         $else:
+          <input type="hidden" name="intention" value="update">
           <input type="hidden" name="key" value="$loopback['secret_key']">
           <div class="field">
             <div class="ui left icon input">

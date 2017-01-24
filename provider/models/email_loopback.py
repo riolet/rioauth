@@ -12,7 +12,7 @@ class EmailLoopback(object):
         qvars = {
             'uid': user_id
         }
-        num_deleted = self.db.delete(self.table, where='user_id=uid', vars=qvars)
+        num_deleted = self.db.delete(self.table, where='user_id=$uid', vars=qvars)
         return num_deleted
 
     def add(self, user_id, redirect_uri, duration=600):
