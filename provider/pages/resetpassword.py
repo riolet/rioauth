@@ -42,7 +42,8 @@ class ResetPassword(object):
             email = user.email
             name = user.name.title()
         elif 'email' in self.data:
-            user = common.users.get_by_email(self.data['email'])
+            email = self.data['email']
+            user = common.users.get_by_email(email)
             if not user:
                 self.errors.append("Error: email not found")
                 return False

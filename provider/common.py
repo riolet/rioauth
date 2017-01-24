@@ -1,9 +1,10 @@
 import os
+import math
+import base64
+import ConfigParser
 import dbsetup
 import constants
 import web
-import base64
-import math
 from models.users import Users
 from models.subscriptions import Subscriptions
 from models.applications import Applications
@@ -59,6 +60,7 @@ def sendmail(to_address, subject, body, from_address="info@riolet.com", headers=
         print("Could not send mail.")
         print("OSError: {0}".format(e))
 
+# Configure database access
 _db = dbsetup.get_db()
 users = Users(_db)
 subscriptions = Subscriptions(_db)
@@ -67,8 +69,18 @@ authorization_codes = AuthorizationCodes(_db)
 bearer_tokens = BearerTokens(_db)
 email_loopback = EmailLoopback(_db)
 
+# configure session storage. Session variable is filled in from server.py
+session_store = web.session.DBStore(_db, 'sessions')
+session = None
+
+# Configure template rendering
 render = web.template.render(os.path.join(constants.BASE_PATH, 'templates'))
 
-session_store = web.session.DBStore(_db, 'sessions')
-
-session = None
+# Configure Sendmail
+mail_config = ConfigParser.SafeConfigParser()
+mail_config.read('sendmail.cfg')
+web.config.smtp_server = mail_config.get('smtp', 'server')
+web.config.smtp_port = int(mail_config.get('smtp', 'port'))
+web.config.smtp_username = mail_config.get('smtp', 'username')
+web.config.smtp_password = mail_config.get('smtp', 'password')
+web.config.smtp_starttls = mail_config.get('smtp', 'starttls').lower() == 'true'
