@@ -76,7 +76,7 @@ class Login(base.Page):
         success = self.try_login()
 
         if not success:
-            common.render.login(self.errors)
+            return common.render.login(self.errors)
 
         common.session['user_id'] = self.user['id']
         common.session['logged_in'] = True

@@ -4,7 +4,7 @@ import common
 
 class Page(object):
     def __init__(self, title):
-        self.data = web.input
+        self.data = web.input()
         self.pagetitle = title
         self.user_id = None
         self.client_id = None
@@ -102,4 +102,5 @@ class LoggedInPage(Page):
 class AdminPage(LoggedInPage):
     def __init__(self, title):
         LoggedInPage.__init__(self, title)
-        self.require_group(self.user_id, 'admin', '/')
+        self.user = self.get_user(self.user_id)
+        self.require_group(self.user, 'admin', '/')

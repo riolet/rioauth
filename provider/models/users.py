@@ -118,8 +118,6 @@ class Users:
         }
         rows = self.db.select(self.table, where="email=$email", vars=qvars, limit=1)
         user = rows.first()
-        print("USERS::get")
-        print("user is {0}".format(user))
         if user:
             hashed_password = user.password.encode(encoding='utf-8')
             ascii_password = password.encode(encoding='utf-8')
@@ -138,11 +136,11 @@ class Users:
 
         # Validate details
         if not self.validate_email(email):
-            raise ValidationError("Email isn't valid")
+            raise common.ValidationError("Email isn't valid")
         if not self.validate_name(name):
-            raise ValidationError("Name must not be empty")
+            raise common.ValidationError("Name must not be empty")
         if not self.validate_pass(password):
-            raise ValidationError("Password must be at least 6 characters")
+            raise common.ValidationError("Password must be at least 6 characters")
 
         qvars = {
             "email": email
@@ -165,6 +163,9 @@ class Users:
         qvars = {
             'uid': user_id
         }
+
+        if not self.validate_pass(new_password):
+            raise common.ValidationError("Password must be at least 6 characters")
 
         hashed_password = bcrypt.hashpw(new_password.encode(encoding='utf-8'), bcrypt.gensalt())
 
