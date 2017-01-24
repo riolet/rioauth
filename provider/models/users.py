@@ -5,9 +5,10 @@ import binascii
 import hmac
 from datetime import datetime
 import common
+import re
 
 
-class Users(object):
+class Users:
     def __init__(self, db):
         self.db = db
         self.table = "Users"
@@ -34,7 +35,7 @@ class Users(object):
     def get_login_cookie(self, user_id):
         token = common.generate_salt(32)
         secret_key = common.generate_salt(32)
-        self.storeRememberToken(user_id, token, secret_key)
+        self.store_remember_token(user_id, token, secret_key)
         cookie_text = "{0}:{1}".format(user_id, token)
         dk = hashlib.pbkdf2_hmac('sha256', cookie_text, secret_key, 100000)
         ascii_hash = binascii.hexlify(dk)
@@ -51,7 +52,9 @@ class Users(object):
     def validate_login_cookie(self, user_id, token, cookie_hash):
         """
         Validate a "remember me" cookie meant to keep a user logged in.
-        :param cookie: The cookie saved to remember a user being logged in.
+        :param user_id: The user to match against
+        :param token: One of two secret codes (stored with the user db row)
+        :param cookie_hash: Everything hashed together
         :return: True or False if the cookie matches a login credential
         """
         valid = False
@@ -62,11 +65,24 @@ class Users(object):
             saved_key = user.secret_key
             dk = hashlib.pbkdf2_hmac('sha256', "{0}:{1}".format(user_id, saved_token), saved_key, 100000)
             ascii_hash = binascii.hexlify(dk)
-            matches = hmac.compare_digest("{0}:{1}:{2}".format(user_id, token, cookie_hash), "{0}:{1}:{2}".format(user_id, saved_token, ascii_hash))
+            matches = hmac.compare_digest("{0}:{1}:{2}".format(user_id, token, cookie_hash),
+                                          "{0}:{1}:{2}".format(user_id, saved_token, ascii_hash))
             if matches:
                 print("user codes match! User is remembered")
                 valid = True
         return valid
+
+    @staticmethod
+    def validate_pass(password):
+        return len(password) >= 6
+
+    @staticmethod
+    def validate_email(email):
+        return bool(re.match(r'^[^@]+@[^.@]+\.[^@]+$', email))
+
+    @staticmethod
+    def validate_name(name):
+        return len(name) > 0
 
     def get_by_email(self, email):
         qvars = {
@@ -116,17 +132,20 @@ class Users(object):
         else:
             return None
 
-    def add(self, email, password, **kwargs):
-        if type(email) == unicode:
-            email = email.encode(encoding='utf-8')
-        if type(password) is unicode:
-            password = password.encode(encoding='utf-8')
-        for k, v in kwargs.iteritems():
-            if type(v) is unicode:
-                kwargs[k] = v.encode(encoding='utf-8')
+    def add(self, email, password, name, **kwargs):
+        # Password needs be string not unicode
+        password = password.encode(encoding='utf-8')
+
+        # Validate details
+        if not self.validate_email(email):
+            raise ValidationError("Email isn't valid")
+        if not self.validate_name(name):
+            raise ValidationError("Name must not be empty")
+        if not self.validate_pass(password):
+            raise ValidationError("Password must be at least 6 characters")
 
         qvars = {
-            "email": email,
+            "email": email
         }
         rows = self.db.select(self.table, where="email=$email", vars=qvars, limit=1)
         user = rows.first()
@@ -152,7 +171,7 @@ class Users(object):
         changes = self.db.update(self.table, 'id=$uid', vars=qvars, password=hashed_password)
         return changes == 1
 
-    def storeRememberToken(self, account_id, token, secret):
+    def store_remember_token(self, account_id, token, secret):
         qvars = {
             'aid': account_id
         }

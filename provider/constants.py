@@ -4,6 +4,8 @@ import sys
 BASE_PATH = os.path.dirname(__file__)
 DBPATH = ['data']
 DBFILENAME = 'dev.db'
+DOMAIN = 'auth.local'
+REMEMBER_COOKIE_NAME = "rememberme"
 
 sys.path.append(BASE_PATH)
 
@@ -21,5 +23,3 @@ urls = (
     '/changepassword', 'pages.changepassword.ChangePassword',
     '/confirmemail', 'pages.confirmemail.ConfirmEmail',
 )
-
-REMEMBER_COOKIE_NAME = "rememberme"

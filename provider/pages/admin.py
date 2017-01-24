@@ -1,32 +1,11 @@
-import web
-import constants
 import common
+import base
 
 
-class Admin:
+class Admin(base.AdminPage):
     def __init__(self):
-        self.errors = []
-        self.info = []
-
-    def get_user_id(self):
-        if "logged_in" in common.session and common.session['logged_in'] is True and "user_id" in common.session:
-            return common.session['user_id']
-
-        cookie = web.cookies().get(constants.REMEMBER_COOKIE_NAME)
-        if cookie:
-            cookie_parts = cookie.split(":")
-            if len(cookie_parts) == 3:
-                uid, token, _hash = cookie_parts
-                if common.users.validate_login_cookie(uid, token, _hash):
-                    common.session['logged_in'] = True
-                    common.session['user_id'] = uid
-                    return uid
-        return None
-
-    def get_user(self, user_id):
-        user = dict(common.users.get_by_id(user_id))
-
-        return user
+        base.AdminPage.__init__(self, "Admin panel")
+        self.user = None
 
     def add_user(self, data):
         try:
@@ -122,10 +101,6 @@ class Admin:
         except:
             self.errors.append("Error deleting subscription")
 
-    def is_admin(self, user):
-        groups = user['groups'].split(' ')
-        return 'admin' in groups
-
     def get_users(self):
         return common.users.get_all()
 
@@ -142,47 +117,31 @@ class Admin:
         return common.render.admin(user, users, apps, subs, self.errors, self.info)
 
     def GET(self):
-        data = web.input()
-        common.report_init("ADMIN", "GET", data)
-
-        user_id = self.get_user_id()
-        user = self.get_user(user_id)
-        is_admin = self.is_admin(user)
-        if not is_admin:
-            raise web.seeother("/")
-
-        return self.render_page(user)
+        self.user = self.get_user(self.user_id)
+        return self.render_page(self.user)
 
     def POST(self):
-        data = web.input()
-        common.report_init("ADMIN", "POST", data)
-
-        user_id = self.get_user_id()
-        user = self.get_user(user_id)
-        is_admin = self.is_admin(user)
-        if not is_admin:
-            raise web.seeother("/")
-
-        action = data.get('action', None)
+        self.user = self.get_user(self.user_id)
+        action = self.data.get('action', None)
         
         if action == "add_user":
             print("Add user")
-            self.add_user(data)
+            self.add_user(self.data)
         elif action == "delete_user":
             print("Delete user")
-            self.delete_user(data)
+            self.delete_user(self.data)
         elif action == "add_app":
             print("Add app")
-            self.add_app(data)
+            self.add_app(self.data)
         elif action == "delete_app":
             print("Delete app")
-            self.delete_app(data)
+            self.delete_app(self.data)
         elif action == "add_sub":
             print("Add sub")
-            self.add_sub(data)
+            self.add_sub(self.data)
         elif action == "delete_sub":
             print("Delete sub")
-            self.delete_sub(data)
+            self.delete_sub(self.data)
 
-        return self.render_page(user)
+        return self.render_page(self.user)
         

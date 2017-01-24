@@ -1,14 +1,13 @@
-import web
 import common
+import base
 
 
-class ConfirmEmail(object):
+class ConfirmEmail(base.Page):
     def __init__(self):
-        self.data = web.input()
+        base.Page.__init__(self, 'Confirm Email')
         self.loopback = None
 
     def get_loopback(self):
-        print()
         key = self.data.get('key')
         if not key:
             return
@@ -16,12 +15,10 @@ class ConfirmEmail(object):
         self.loopback = common.email_loopback.get(key)
 
     def confirm_email(self):
-        print("confirming email")
         user_id = self.loopback['user_id']
         common.users.update(user_id, email_confirmed='1')
 
     def GET(self):
-        common.report_init('CONFIRMEMAIL', 'GET', self.data)
         # get the emailed key info
         self.get_loopback()
 

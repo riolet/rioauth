@@ -1,11 +1,12 @@
 import time
 import web
 import common
+import base
 
-class ResetPassword(object):
+
+class ResetPassword(base.Page):
     def __init__(self):
-        self.data = web.input()
-        self.errors = []
+        base.Page.__init__(self, 'Reset Password')
         self.loopback = None
         self.offer_resend = False
         self.user = None
@@ -96,8 +97,6 @@ Riolet Corporation
 
 
     def GET(self):
-        common.report_init('RESETPASSWORD', 'GET', self.data)
-
         self.validate_key()
         # get the code.
         # is expired?
@@ -112,7 +111,6 @@ Riolet Corporation
         return common.render.resetpassword(self.user, self.loopback, self.offer_resend, self.errors)
 
     def POST(self):
-        common.report_init('RESETPASSWORD', 'POST', self.data)
         intention = self.data.get("intention")
 
         if intention not in ['resend', 'update']:

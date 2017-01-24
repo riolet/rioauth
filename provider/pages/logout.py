@@ -1,23 +1,20 @@
 import web
 import constants
 import common
+import base
 
 
-class Logout(object):
+class Logout(base.Page):
+    def __init__(self):
+        base.Page.__init__(self, 'Logout')
+
     def GET(self):
-        data = web.input()
-        common.report_init("LOGOUT", "GET", data)
-        web.setcookie(constants.REMEMBER_COOKIE_NAME, "", expires=-1, domain="auth.local", path="/")
+        # remove any login cookies
+        web.setcookie(constants.REMEMBER_COOKIE_NAME, "", expires=-1, domain=constants.DOMAIN, path="/")
 
         destination = '/'
-        if 'login_redirect' in common.session:
-            destination = common.session['login_redirect']
+        if 'logout_redirect' in common.session:
+            destination = common.session['logout_redirect']
 
         common.session.kill()
-        print("redirecting to {0}".format(destination))
         web.seeother(destination)
-
-    def POST(self):
-        print(" LOGOUT POST ".center(50, '-'))
-        self.GET()
-

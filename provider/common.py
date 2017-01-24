@@ -60,6 +60,15 @@ def sendmail(to_address, subject, body, from_address="info@riolet.com", headers=
         print("Could not send mail.")
         print("OSError: {0}".format(e))
 
+
+class ValidationError(Exception):
+    pass
+
+
+class AuthenticationError(Exception):
+    pass
+
+
 # Configure database access
 _db = dbsetup.get_db()
 users = Users(_db)
