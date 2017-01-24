@@ -36,6 +36,7 @@ class EmailLoopback(object):
         return row and row.expiration_time <= int(time.time())
 
     def get(self, key):
+        print("getting key {0}".format(key))
         qvars = { 'key': key }
         rows = self.db.select(self.table, where='secret_key=$key', vars=qvars)
         row = rows.first()

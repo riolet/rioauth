@@ -2,25 +2,25 @@ import common
 
 # create admin account
 try:
-    admin_id = common.users.add('hat@headquarters.com', 'adminpass', name='Admin', groups="admin")
+    admin_id = common.users.add('hat@headquarters.com', 'adminpass', name='Admin', groups="admin", email_confirmed='1')
 except KeyError:
     admin = common.users.get('hat@headquarters.com', 'adminpass')
     admin_id = admin.id
 # create app owner account
 try:
-    boss_id = common.users.add('owner@company.com', 'bosspass', name='Pointy Haired Boss')
+    boss_id = common.users.add('owner@company.com', 'bosspass', name='Pointy Haired Boss', email_confirmed='1')
 except KeyError:
     boss = common.users.get('owner@company.com', 'bosspass')
     boss_id = boss.id
 # create user account (who will have access to the app)
 try:
-    user_id = common.users.add('user@customer.com', 'secretpass', name='Bob the Customer')
+    user_id = common.users.add('user@customer.com', 'secretpass', name='Bob the Customer', email_confirmed='1')
 except KeyError:
     user = common.users.get('user@customer.com', 'secretpass')
     user_id = user.id
 # create user account (who will NOT have access to the app)
 try:
-    other_user_id = common.users.add('john@doe.com', '123abc', name='John Doe')
+    other_user_id = common.users.add('john@doe.com', '123abc', name='John Doe', email_confirmed='1')
 except KeyError:
     other_user = common.users.get('john@doe.com', '123abc')
     other_user_id = other_user.id

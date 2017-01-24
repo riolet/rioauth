@@ -20,8 +20,34 @@ class Register(object):
     def validate_name(self, name):
         return len(name) > 0
 
+    def send_conf_email(self, user_id, name, email):
+
+        duration = 1800  # 30 minutes
+        key = common.email_loopback.add(user_id, '/login', duration=duration)
+        subject = "Riolet Registration"
+        link = "https://{domain}{port}/confirmemail?key={key}".format(
+            domain=web.ctx.env['SSL_SERVER_S_DN_CN'],
+            port= '' if web.ctx.env['SERVER_PORT'] == 443 else ':{0}'.format(web.ctx.env['SERVER_PORT']),
+            key=key)
+        body = \
+"""
+Hello, {name}
+
+Thank you for registering with Riolet. To complete your registration, please follow the link below:
+
+{link}
+
+This link will be valid for the next {duration} minutes. If it expires, you will need to register again.
+
+Thanks,
+Riolet
+""".format(name=name, link=link, duration=duration/60)
+        common.sendmail(email, subject, body)
+
+
     def register_user(self, name, email, password):
-        common.users.add(email, password, name=name)
+        user_id = common.users.add(email, password, name=name)
+        self.send_conf_email(user_id, name, email)
 
     def POST(self):
         data = web.input()

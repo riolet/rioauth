@@ -6,6 +6,7 @@ import oauthlib.oauth2.rfc6749.errors as errors
 import web.webapi
 
 class Authorize(object):
+
     def __init__(self):
         self.data = web.input()
         self._authorization_endpoint = WebApplicationServer(MyRequestValidator())

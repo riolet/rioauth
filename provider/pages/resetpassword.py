@@ -54,7 +54,7 @@ class ResetPassword(object):
             return False
 
         duration = 1800  # 30 minutes
-        key = common.email_loopback.add(user_id, redirect_uri, duration=60*30)
+        key = common.email_loopback.add(user_id, redirect_uri, duration=duration)
 
         subject = "Riolet Password Reset"
         link = "https://{domain}{port}/resetpassword?key={key}".format(

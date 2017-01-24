@@ -24,6 +24,13 @@ class Users(object):
         now = int(time.time())
         self.db.update(self.table, "email=$email", vars=qvars, last_access=now)
 
+    def update(self, user_id, **kwargs):
+        qvars = {
+            'uid': user_id
+        }
+        affected = self.db.update(self.table, 'id=$uid', vars=qvars, **kwargs)
+        return affected == 1
+
     def get_login_cookie(self, user_id):
         token = common.generate_salt(32)
         secret_key = common.generate_salt(32)
@@ -124,7 +131,10 @@ class Users(object):
         rows = self.db.select(self.table, where="email=$email", vars=qvars, limit=1)
         user = rows.first()
         if user:
-            raise KeyError("Email already exists")
+            if user.email_confirmed == '1':
+                raise KeyError("Email already exists")
+            else:
+                self.delete(user.user_id)
 
         hashed_password = bcrypt.hashpw(password, bcrypt.gensalt())
 

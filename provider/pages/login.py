@@ -23,6 +23,8 @@ class Login(object):
         user = common.users.get(email, password)
         if user is None:
             raise AuthenticationError("Incorrect email or password.")
+        elif user.email_confirmed == '0':
+            raise AuthenticationError("Please confirm your email address before logging in.")
         return user
 
     def GET(self):
@@ -44,9 +46,9 @@ class Login(object):
             traceback.print_exc()
             server_errors = ['Error processing form.']
             return common.render.login(server_errors)
-        except AuthenticationError:
+        except AuthenticationError as e:
             traceback.print_exc()
-            server_errors = ['Incorrect username or password.']
+            server_errors = [e.message]
             return common.render.login(server_errors)
 
         if user:
