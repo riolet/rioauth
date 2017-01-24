@@ -108,7 +108,7 @@ Riolet Corporation
         if self.loopback:
             self.user = common.users.get_by_id(self.loopback['user_id'])
 
-        return common.render.resetpass(self.user, self.loopback, self.offer_resend, self.errors)
+        return common.render.resetpassword(self.user, self.loopback, self.offer_resend, self.errors)
 
     def POST(self):
         common.report_init('RESETPASSWORD', 'POST', self.data)
@@ -123,7 +123,7 @@ Riolet Corporation
                 msg = "Please check your email for your password reset link."
                 return common.render.message(success=[msg], buttons=[('Login', '/login')])
             else:
-                return common.render.resetpass(self.user, self.loopback, self.offer_resend, self.errors)
+                return common.render.resetpassword(self.user, self.loopback, self.offer_resend, self.errors)
 
         elif intention == 'update':
             success = self.updatepassword()
@@ -131,7 +131,7 @@ Riolet Corporation
                 msg = "Your password has been successfully changed."
                 return common.render.message(success=[msg], buttons=[('Login', '/login')])
             else:
-                return common.render.resetpass(self.user, self.loopback, self.offer_resend, self.errors)
+                return common.render.resetpassword(self.user, self.loopback, self.offer_resend, self.errors)
 
         else:
             web.seeother('/')
