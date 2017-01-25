@@ -166,7 +166,13 @@ class MyRequestValidator(RequestValidator):
         # Remember to check expiration and scope membership
         # TODO: Remember to check expiration and scope membership
         print("validate_bearer_token")
+        # TODO: why are these empty?
+        print("token is {0}".format(token))
+        print("scope is {0}".format(scopes))
+        print("reque is {0}".format(request))
         db_token = common.bearer_tokens.get_access(token)
+        print("db token is {0}".format(db_token))
+        raise OSError("oops")
         return db_token and all([scope in db_token.scopes for scope in scopes])
 
     # Token refresh request
@@ -190,7 +196,6 @@ class MyRequestValidator(RequestValidator):
             request.app_id = db_token.app_id
             return True
         return False
-
 
     def get_id_token(self, token, token_handler, request):
         # for OpenID
