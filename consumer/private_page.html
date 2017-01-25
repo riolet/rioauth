@@ -1,4 +1,4 @@
-$def with (data)
+$def with (user, status, data)
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,9 +7,16 @@ $def with (data)
 </head>
 <body>
 <h1>Access Granted</h1>
-<p>welcome</p>
-<p>Message:</p>
-<blockquote>$data</blockquote>
+<p>welcome, $user</p>
+<hr />
+<h2>Resource Request:</h2>
+ <dl>
+  <dt>Status</dt>
+  <dd>$status</dd>
+  <dt>Response</dt>
+  <dd>$data</dd>
+</dl>
+<hr />
 <a href="logout">Logout</a>
 </body>
 </html>

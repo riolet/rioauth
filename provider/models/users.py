@@ -92,11 +92,13 @@ class Users:
         user = rows.first()
         return user
 
-    def get_by_id(self, account):
+    def get_by_id(self, account, what):
         qvars = {
             "aid": account
         }
-        rows = self.db.select(self.table, where='id=$aid', vars=qvars, limit=1)
+        if type(what) is list or type(what) is tuple:
+            what = ', '.join(what)
+        rows = self.db.select(self.table, where='id=$aid', what=what, vars=qvars, limit=1)
         user = rows.first()
         return user
 

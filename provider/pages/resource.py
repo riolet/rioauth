@@ -9,6 +9,7 @@ import base
 class Resource(base.Page):
     def __init__(self):
         base.Page.__init__(self, 'Resource')
+        self.scopes = []
         self.oauthServer = WebApplicationServer(MyRequestValidator())
         self.token = self.get_bearer_token()
 
@@ -18,20 +19,35 @@ class Resource(base.Page):
             return common.bearer_tokens.get(access_token)
         return None
 
+    def prepare_response(self):
+        response = {}
+        keys = ['id', 'email', 'name', 'groups', 'last_access']
+        self.user = self.get_user(self.user_id, what=keys)
+        subscription = common.subscriptions.get(self.app_id, self.user_id)
+        if subscription:
+            response['status'] = 'success'
+            response['subscription'] = dict(subscription)
+            response['user'] = dict(self.user)
+        else:
+            response['status'] = 'failed'
+            response['message'] = 'Subscription not found.'
+        return response
+
     def GET(self):
-        auth = self.headers['HTTP_AUTHORIZATION']
-        print("Authorization is {0}".format(auth))
+        # WSGI saves headers under different names than standard http.
+        # For details, see:
+        # https://www.python.org/dev/peps/pep-0333/#environ-variables
+        self.headers['Authorization'] = self.headers.pop('HTTP_AUTHORIZATION', '')
 
-        self.require_oauthentication(self.oauthServer)
+        # raises 403 Forbidden if authentication fails.
+        self.require_oauthentication(self.oauthServer, scopes_required=['basic'])
 
-        print("Authorized!")
-        print(self.request)
-        try:
-            print(self.request.client)
-            print(self.request.user)
-            print(self.request.scopes)
-        except:
-            print("Exception printing request parts")
+        print("Resource is Authorized!")
+        self.app_id = self.request.client_id
+        self.user_id = self.request.user
+        self.scopes = self.request.scopes
+
+        response = self.prepare_response()
 
         web.header("Content-Type", "application/json")
-        return json.dumps({'Status': 'Success'})
+        return json.dumps(response)

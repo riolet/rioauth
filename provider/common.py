@@ -30,8 +30,9 @@ def generate_salt(length):
     return encoded[:length]
 
 
-def report_init(page, protocol, webinput):
+def report_init(uri, page, protocol, webinput):
     print(" {page} {protocol} ".format(page=page, protocol=protocol).center(50, '-'))
+    print("Reconstructed Uri: {0}".format(uri))
     print("SESSION ID: {0}".format(web.ctx.environ.get('HTTP_COOKIE', 'unknown')))
     print("SESSION KEYS: {0}".format(session.keys()))
     print("SESSION: {0}".format(dict(session)))

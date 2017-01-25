@@ -91,15 +91,25 @@ class Private(object):
             print("redirecting to /public")
             raise web.seeother("/public")
 
-        print("Requesting resource")
         #request a resource with the token
+        print("Requesting resource")
         resource = self.oauth.request("https://auth.local:8081/resource")
-        print("Resource received: {0}".format(resource))
-        message = repr(resource)
+
+        # process resource response
+        status = resource.pop('status')
+        username = "unknown user"
+        message = 'No message.'
+        if status == 'failed':
+            message = resource.get('message') or message
+        else:
+            if 'user' in resource and 'name' in resource['user']:
+                username = resource['user']['name']
+            if 'subscription' in resource:
+                message = repr(resource['subscription'])
 
         # finally, render the page
         print("Rendering page")
-        return render.private_page(message)
+        return render.private_page(username, status, message)
 
     def POST(self):
         data = web.input()

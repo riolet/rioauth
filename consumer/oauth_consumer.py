@@ -1,6 +1,7 @@
 import sys
 import logging
 import requests_oauthlib
+import json
 
 log = logging.getLogger('oauthlib')
 log.addHandler(logging.StreamHandler(sys.stdout))
@@ -99,5 +100,5 @@ class Authorization(object):
             token_updater = self.save_token)
 
         # TODO: re-enable verify (for SSL)
-        r = oauth.get(protected_url, verify=False)
-        return {'status': 'Success'}
+        response = oauth.get(protected_url, verify=False)
+        return json.loads(response.content)

@@ -1,3 +1,4 @@
+from urllib import quote
 import web
 import common
 
@@ -5,33 +6,54 @@ import common
 class Page(object):
     def __init__(self, title):
         self.data = web.input()
-        self.pagetitle = title
+        self.page_title = title
         self.user_id = None
-        self.client_id = None
+        self.app_id = None
         self.subscription_id = None
-        self.uri, self.http_method, self.body, self.headers = self.extract_params()
+        self.http_method, self.body, self.headers = self.extract_params()
+        self.uri = self.reconstruct_uri()
         self.errors = []
         self.info = []
         self.request = None
 
-        common.report_init(self.pagetitle, web.ctx.env['REQUEST_METHOD'], self.data)
+        common.report_init(self.uri, self.page_title, web.ctx.env['REQUEST_METHOD'], self.data)
 
-    def extract_params(self):
-        # TODO: host should be web.ctx.env['SERVER_NAME']
-        # but that doesn't work for testing here.
-        uri = "{scheme}://{host}{port}{path}".format(
-            scheme=web.ctx.env.get('wsgi.url_scheme', 'http'),
-            host='auth.local',  # web.ctx.env['SERVER_NAME'],
-            port=':{0}'.format(web.ctx.env['SERVER_PORT']),
-            path=web.ctx.env['REQUEST_URI']
-        )
+    @staticmethod
+    def reconstruct_uri():
+        url = web.ctx.environ['wsgi.url_scheme'] + '://'
+
+        if web.ctx.environ.get('HTTP_HOST'):
+            url += web.ctx.environ['HTTP_HOST']
+        else:
+            url += web.ctx.environ['SERVER_NAME']
+
+            if web.ctx.environ['wsgi.url_scheme'] == 'https':
+                if web.ctx.environ['SERVER_PORT'] != '443':
+                    url += ':' + web.ctx.environ['SERVER_PORT']
+            else:
+                if web.ctx.environ['SERVER_PORT'] != '80':
+                    url += ':' + web.ctx.environ['SERVER_PORT']
+
+        url += quote(web.ctx.environ.get('SCRIPT_NAME', ''))
+        url += quote(web.ctx.environ.get('PATH_INFO', ''))
+        if web.ctx.environ.get('QUERY_STRING'):
+            url += '?' + web.ctx.environ['QUERY_STRING']
+
+        return url
+
+    @staticmethod
+    def extract_params():
         http_method = web.ctx.environ["REQUEST_METHOD"]
         body = web.ctx.get('data', '')
         headers = web.ctx.env.copy()
         headers.pop("wsgi.errors", None)
         headers.pop("wsgi.input", None)
+        # headers are not in the usual format. e.g. Content-Type is "CONTENT_TYPE"
+        # and Authorization is "HTTP_AUTHORIZATION"
+        # See this for renaming details:
+        # https://www.python.org/dev/peps/pep-0333/#environ-variables
 
-        return uri, http_method, body, headers
+        return http_method, body, headers
 
     def is_logged_in(self):
         if 'logged_in' in common.session and 'user_id' in common.session and common.session['logged_in'] is True:
@@ -64,16 +86,17 @@ class Page(object):
             common.session.pop('subscribe_redirect', None)
         return self.subscription_id
 
-    def require_oauthentication(self, oauthServer, scope_list=None):
-        scopes_list = scope_list or []
-        valid, self.request = oauthServer.verify_request(
+    def require_oauthentication(self, oauth_server, scopes_required=None):
+        scopes_list = scopes_required or []
+        valid, self.request = oauth_server.verify_request(
             self.uri, self.http_method, self.body, self.headers, scopes_list)
         if not valid:
             raise web.forbidden()
         else:
             return True
 
-    def is_in_group(self, user, group):
+    @staticmethod
+    def is_in_group(user, group):
         groups = user['groups'].split(' ')
         return group in groups
 
@@ -81,7 +104,8 @@ class Page(object):
         if not self.is_in_group(user, group):
             raise web.seeother(fail_uri)
 
-    def get_user_data(self, user_id):
+    @staticmethod
+    def get_user_data(user_id):
         user = dict(common.users.get_by_id(user_id))
 
         # accessible apps
@@ -94,8 +118,9 @@ class Page(object):
 
         return user
 
-    def get_user(self, user_id):
-        user = dict(common.users.get_by_id(user_id))
+    @staticmethod
+    def get_user(user_id, what='*'):
+        user = dict(common.users.get_by_id(user_id, what))
         return user
 
     def GET(self):

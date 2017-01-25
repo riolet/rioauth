@@ -60,9 +60,6 @@ class MyRequestValidator(RequestValidator):
         # request.client, request.state and request.user (the last is passed in
         # post_authorization credentials, i.e. { 'user': request.user}.
         print('save_authorization_code')
-        print("app_id is {0}".format(app_id))
-        print("code is {0}".format(code))
-        print("request is {0}".format(request))
         code_string = code['code']
         state = code.get('state', '')
         common.authorization_codes.set(
@@ -169,13 +166,15 @@ class MyRequestValidator(RequestValidator):
         # TODO: why are these empty?
         print("token is {0}".format(token))
         print("scope is {0}".format(scopes))
-        print("reque is {0}".format(request))
+        # print("request is {0}".format(request))
         db_token = common.bearer_tokens.get_access(token)
         print("db token is {0}".format(db_token))
-        raise OSError("oops")
-        return db_token and all([scope in db_token.scopes for scope in scopes])
-
-    # Token refresh request
+        if db_token and all([scope in db_token.scopes for scope in scopes]):
+            request.user = db_token.user_id
+            request.scopes = db_token.scopes
+            request.client_id = db_token.app_id
+            return True
+        return False
 
     def get_original_scopes(self, refresh_token, request, *args, **kwargs):
         # Obtain the token associated with the given refresh_token and
@@ -193,7 +192,7 @@ class MyRequestValidator(RequestValidator):
         if db_token:
             request.user = db_token.user_id
             request.scopes = db_token.scopes
-            request.app_id = db_token.app_id
+            request.client_id = db_token.app_id
             return True
         return False
 
