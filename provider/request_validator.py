@@ -182,23 +182,57 @@ class MyRequestValidator(RequestValidator):
         return scopes
 
     def validate_refresh_token(self, refresh_token, client, request, *args, **kwargs):
-        raise NotImplemented("{0} not implemented".format(inspect.currentframe().f_code.co_name))
+        print("validate_refresh_token")
+        db_token = common.bearer_tokens.get_refresh(refresh_token)
+        if db_token:
+            request.user = db_token.user_id
+            request.scopes = db_token.scopes
+            request.app_id = db_token.app_id
+            return True
+        return False
+
 
     def get_id_token(self, token, token_handler, request):
+        # for OpenID
+        print("get_id_token")
+        print(token)
+        print(token_handler)
+        print(request)
         raise NotImplemented("{0} not implemented".format(inspect.currentframe().f_code.co_name))
 
     def revoke_token(self, token, token_type_hint, request, *args, **kwargs):
+        print("revoke_token")
+        common.bearer_tokens.delete_token(token_type_hint, token)
         raise NotImplemented("{0} not implemented".format(inspect.currentframe().f_code.co_name))
 
     def validate_user_match(self, id_token_hint, scopes, claims, request):
+        # for OpenID
         print("validate_user_match")
+        print(id_token_hint)
+        print(scopes)
+        print(claims)
+        print(request)
         raise NotImplemented("{0} not implemented".format(inspect.currentframe().f_code.co_name))
 
     def validate_silent_login(self, request):
+        # for OpenID
+        print("validate_silent_login")
+        print(request)
         raise NotImplemented("{0} not implemented".format(inspect.currentframe().f_code.co_name))
 
     def validate_silent_authorization(self, request):
+        # for OpenID
+        print("validate_silent_authorization")
+        print(request)
         raise NotImplemented("{0} not implemented".format(inspect.currentframe().f_code.co_name))
 
     def validate_user(self, username, password, client, request, *args, **kwargs):
+        # for password credentials (not bearer tokens)
+        print("validate_user")
+        print(username)
+        print(password)
+        print(client)
+        print(request)
+        print(args)
+        print(kwargs)
         raise NotImplemented("{0} not implemented".format(inspect.currentframe().f_code.co_name))
