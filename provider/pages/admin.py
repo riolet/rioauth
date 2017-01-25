@@ -5,7 +5,6 @@ import base
 class Admin(base.AdminPage):
     def __init__(self):
         base.AdminPage.__init__(self, "Admin panel")
-        self.user = None
 
     def add_user(self, data):
         try:
@@ -117,11 +116,9 @@ class Admin(base.AdminPage):
         return common.render.admin(user, users, apps, subs, self.errors, self.info)
 
     def GET(self):
-        self.user = self.get_user(self.user_id)
         return self.render_page(self.user)
 
     def POST(self):
-        self.user = self.get_user(self.user_id)
         action = self.data.get('action', None)
         
         if action == "add_user":
