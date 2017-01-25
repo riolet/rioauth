@@ -3,7 +3,7 @@ class BearerTokens(object):
         self.db = db
         self.table = "BearerTokens"
 
-    def remove(self, application_id, user):
+    def delete(self, application_id, user):
         qvars = {
             'aid': application_id,
             'uid': user
@@ -11,8 +11,21 @@ class BearerTokens(object):
         num_deleted = self.db.delete(self.table, where="app_id=$aid AND user_id=$uid", vars=qvars)
         return num_deleted
 
+    def delete_token(self, type, token):
+        qvars = {
+            'tok': token
+        }
+
+        if type == 'access_token':
+            deleted = self.db.delete(self.table, where='access_token=$tok', vars=qvars)
+            return deleted
+        elif type == 'refresh_token':
+            deleted = self.db.delete(self.table, where='refresh_token=$tok', vars=qvars)
+            return deleted
+        return 0
+
     def set(self, application_id, user, scopes, access_token, refresh_token):
-        self.remove(application_id, user)
+        self.delete(application_id, user)
         self.db.insert(self.table,
                        app_id=application_id,
                        user_id=user,

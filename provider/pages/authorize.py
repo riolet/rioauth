@@ -10,12 +10,12 @@ class Authorize(base.LoggedInPage):
 
     def __init__(self):
         base.LoggedInPage.__init__(self, 'Authorize')
-        self._authorization_endpoint = WebApplicationServer(MyRequestValidator())
+        self.oauthServer = WebApplicationServer(MyRequestValidator())
 
     def validate_application(self):
         try:
             # begin authorization sequence
-            scopes, credentials = self._authorization_endpoint.validate_authorization_request(
+            scopes, credentials = self.oauthServer.validate_authorization_request(
                 self.uri, self.http_method, self.body, self.headers)
 
             self.scopes = scopes
@@ -50,7 +50,7 @@ class Authorize(base.LoggedInPage):
 
     def create_authorization_token(self):
         try:
-            headers, body, status = self._authorization_endpoint.create_authorization_response(
+            headers, body, status = self.oauthServer.create_authorization_response(
                 self.uri, self.http_method, self.body, self.headers, self.scopes, self.credentials)
 
             print("\nauthorization response created")

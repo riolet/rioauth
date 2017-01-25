@@ -9,9 +9,8 @@ import base
 class Resource(base.Page):
     def __init__(self):
         base.Page.__init__(self, 'Resource')
-        self._token_endpoint = WebApplicationServer(MyRequestValidator())
-        self.token = None
-        self.get_bearer_token()
+        self.oauthServer = WebApplicationServer(MyRequestValidator())
+        self.token = self.get_bearer_token()
 
     def get_bearer_token(self):
         if 'token' in self.data:
@@ -20,11 +19,19 @@ class Resource(base.Page):
         return None
 
     def GET(self):
-        web.header("Content-Type", "application/json")
-        return json.dumps({'Status': 'Success'})
+        auth = self.headers['HTTP_AUTHORIZATION']
+        print("Authorization is {0}".format(auth))
 
-    def POST(self):
+        self.require_oauthentication(self.oauthServer)
+
+        print("Authorized!")
+        print(self.request)
+        try:
+            print(self.request.client)
+            print(self.request.user)
+            print(self.request.scopes)
+        except:
+            print("Exception printing request parts")
+
         web.header("Content-Type", "application/json")
-        print(self.token)
-        print('')
         return json.dumps({'Status': 'Success'})

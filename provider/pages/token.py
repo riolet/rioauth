@@ -8,7 +8,7 @@ import base
 class Token(base.Page):
     def __init__(self):
         base.Page.__init__(self, "Token")
-        self._token_endpoint = WebApplicationServer(MyRequestValidator())
+        self.oauthServer = WebApplicationServer(MyRequestValidator())
 
     def POST(self):
         # If you wish to include request specific extra credentials for
@@ -17,7 +17,7 @@ class Token(base.Page):
             #'foo': 'bar'
         }
 
-        headers, body, status = self._token_endpoint.create_token_response(
+        headers, body, status = self.oauthServer.create_token_response(
             self.uri, self.http_method, self.body, self.headers, credentials)
 
         # All requests to /token will return a json response, no redirection.

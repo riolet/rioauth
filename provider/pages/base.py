@@ -12,6 +12,7 @@ class Page(object):
         self.uri, self.http_method, self.body, self.headers = self.extract_params()
         self.errors = []
         self.info = []
+        self.request = None
 
         common.report_init(self.pagetitle, web.ctx.env['REQUEST_METHOD'], self.data)
 
@@ -62,6 +63,15 @@ class Page(object):
         else:
             common.session.pop('subscribe_redirect', None)
         return self.subscription_id
+
+    def require_oauthentication(self, oauthServer, scope_list=None):
+        scopes_list = scope_list or []
+        valid, self.request = oauthServer.verify_request(
+            self.uri, self.http_method, self.body, self.headers, scopes_list)
+        if not valid:
+            raise web.forbidden()
+        else:
+            return True
 
     def is_in_group(self, user, group):
         groups = user['groups'].split(' ')
