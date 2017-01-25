@@ -155,7 +155,7 @@ class Users:
 
         hashed_password = bcrypt.hashpw(password, bcrypt.gensalt())
 
-        user_id = self.db.insert(self.table, email=email, password=hashed_password, **kwargs)
+        user_id = self.db.insert(self.table, email=email, password=hashed_password, name=name, **kwargs)
 
         return user_id
 
