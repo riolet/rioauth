@@ -177,7 +177,7 @@ class MyRequestValidator(RequestValidator):
         # access token if the client did not specify a scope during the
         # request.
         print("get_original_scopes")
-        db_token = common.bearer_tokens.get_access(refresh_token)
+        db_token = common.bearer_tokens.get_refresh(refresh_token)
         scopes = db_token.scopes.split(' ')
         return scopes
 
