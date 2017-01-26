@@ -1,4 +1,3 @@
-import time
 import web
 import common
 import base
@@ -23,16 +22,13 @@ class ResetPassword(base.Page):
             self.offer_resend = True
             return
 
-        self.expired = common.email_loopback.is_expired(self.loopback)
-        if self.expired:
+        expired = common.email_loopback.is_expired(self.loopback)
+        if expired:
             self.errors.append('Error: reset code has expired')
             self.offer_resend = True
 
     def resend(self):
         redirect_uri = '/'
-        user_id = 0
-        email = None
-        name = ""
         if 'user_id' in self.data and 'redirect_uri' in self.data:
             user_id = self.data['user_id']
             redirect_uri = self.data['redirect_uri']
@@ -60,16 +56,17 @@ class ResetPassword(base.Page):
         subject = "Riolet Password Reset"
         link = "https://{domain}{port}/resetpassword?key={key}".format(
             domain=web.ctx.env['SSL_SERVER_S_DN_CN'],
-            port= '' if web.ctx.env['SERVER_PORT'] == 443 else ':{0}'.format(web.ctx.env['SERVER_PORT']),
+            port='' if web.ctx.env['SERVER_PORT'] == 443 else ':{0}'.format(web.ctx.env['SERVER_PORT']),
             key=key)
-        body = \
-"""Hello {name},
+        body = """
+Hello {name},
 
 You recently request that your password be reset. To reset your password simply follow the link below:
 
 {link}
 
-If you did not request your password be reset, just ignore this email. The reset code will be valid for the next {duration} minutes.
+If you did not request your password be reset, just ignore this email.
+The reset code will be valid for the next {duration} minutes.
 
 Thanks,
 Riolet Corporation
@@ -94,7 +91,6 @@ Riolet Corporation
             else:
                 self.errors.append("Unknown error while updating password")
         return False
-
 
     def GET(self):
         self.validate_key()

@@ -1,4 +1,3 @@
-import web
 import common
 import base
 

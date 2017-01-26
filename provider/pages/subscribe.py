@@ -1,5 +1,4 @@
 import web
-import constants
 import common
 import base
 
@@ -34,13 +33,14 @@ class Subscribe(base.LoggedInPage):
 
     def enable_sub(self, app_id, user_id):
         try:
-            rowsAffected = common.subscriptions.set_status_by_app_user(app_id, user_id, 'active')
-            if rowsAffected == 0:
+            rows_affected = common.subscriptions.set_status_by_app_user(app_id, user_id, 'active')
+            if rows_affected == 0:
                 self.errors.append("Error: no subscriptions affected")
         except:
             self.errors.append("Error enabling subscription")
 
-    def get_sub(self, user_id, app_id):
+    @staticmethod
+    def get_sub(user_id, app_id):
         return common.subscriptions.get(app_id, user_id)
 
     def GET(self):
@@ -81,4 +81,3 @@ class Subscribe(base.LoggedInPage):
         if 'subscribe_redirect' in common.session:
             destination = common.session['subscribe_redirect']
         raise web.seeother(destination)
-        

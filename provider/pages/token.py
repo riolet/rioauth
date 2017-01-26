@@ -1,4 +1,3 @@
-import web
 import common
 from oauthlib.oauth2 import WebApplicationServer
 from request_validator import MyRequestValidator
@@ -14,7 +13,7 @@ class Token(base.Page):
         # If you wish to include request specific extra credentials for
         # use in the validator, do so here.
         credentials = {
-            #'foo': 'bar'
+            # 'foo': 'bar'
         }
 
         headers, body, status = self.oauthServer.create_token_response(

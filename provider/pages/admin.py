@@ -100,13 +100,16 @@ class Admin(base.AdminPage):
         except:
             self.errors.append("Error deleting subscription")
 
-    def get_users(self):
+    @staticmethod
+    def get_users():
         return common.users.get_all()
 
-    def get_apps(self):
+    @staticmethod
+    def get_apps():
         return common.applications.get_all()
 
-    def get_subs(self):
+    @staticmethod
+    def get_subs():
         return common.subscriptions.get_all()
 
     def render_page(self, user):
@@ -141,4 +144,3 @@ class Admin(base.AdminPage):
             self.delete_sub(self.data)
 
         return self.render_page(self.user)
-        

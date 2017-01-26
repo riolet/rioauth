@@ -6,11 +6,14 @@ import oauthlib.oauth2.rfc6749.errors as errors
 import web.webapi
 import base
 
-class Authorize(base.LoggedInPage):
 
+class Authorize(base.LoggedInPage):
     def __init__(self):
         base.LoggedInPage.__init__(self, 'Authorize')
         self.oauthServer = WebApplicationServer(MyRequestValidator())
+        self.scopes = []
+        self.credentials = {}
+        self.client_id = None
 
     def validate_application(self):
         try:
@@ -32,7 +35,8 @@ class Authorize(base.LoggedInPage):
 
         self.client_id = self.credentials['client_id']
 
-    def save_auth_state(self, credentials, scopes):
+    @staticmethod
+    def save_auth_state(credentials, scopes):
         # Store some important information for later.
         # Not necessarily in session but they need to be
         # accessible in the POST view after form submit.
@@ -40,13 +44,6 @@ class Authorize(base.LoggedInPage):
         # and fails to be properly pickled into the session storage
         common.session['oauth2_credentials'] = credentials
         common.session['oauth2_scopes'] = scopes
-
-    def require_subscription(self):
-        if not self.is_subscribed():
-            common.session['subscribe_redirect'] = self.uri
-            raise web.seeother('/subscribe?app_id={0}'.format(self.data['client_id']))
-        else:
-            common.session.pop('subscribe_redirect', None)
 
     def create_authorization_token(self):
         try:

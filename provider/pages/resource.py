@@ -22,12 +22,12 @@ class Resource(base.Page):
     def prepare_response(self):
         response = {}
         keys = ['id', 'email', 'name', 'groups', 'last_access']
-        self.user = self.get_user(self.user_id, what=keys)
+        user = self.get_user(self.user_id, what=keys)
         subscription = common.subscriptions.get(self.app_id, self.user_id)
         if subscription:
             response['status'] = 'success'
             response['subscription'] = dict(subscription)
-            response['user'] = dict(self.user)
+            response['user'] = dict(user)
         else:
             response['status'] = 'failed'
             response['message'] = 'Subscription not found.'

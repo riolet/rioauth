@@ -129,10 +129,12 @@ class Page(object):
     def POST(self):
         raise web.nomethod()
 
+
 class LoggedInPage(Page):
     def __init__(self, title):
         Page.__init__(self, title)
         self.require_login(self.uri)
+
 
 class AdminPage(LoggedInPage):
     def __init__(self, title):

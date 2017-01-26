@@ -1,5 +1,3 @@
-import re
-import traceback
 import web
 import common
 import base
@@ -10,26 +8,17 @@ class Register(base.Page):
         # show login page
         return common.render.register()
 
-    def _validate_pass(self, password):
-        return len(password) >= 6
-
-    def _validate_email(self, email):
-        return bool(re.match(r'^[^@]+@[^\.@]+\.[^@]+$', email))
-
-    def _validate_name(self, name):
-        return len(name) > 0
-
-    def send_conf_email(self, user_id, name, email):
+    @staticmethod
+    def send_conf_email(user_id, name, email):
 
         duration = 1800  # 30 minutes
         key = common.email_loopback.add(user_id, '/login', duration=duration)
         subject = "Riolet Registration"
         link = "https://{domain}{port}/confirmemail?key={key}".format(
             domain=web.ctx.env['SSL_SERVER_S_DN_CN'],
-            port= '' if web.ctx.env['SERVER_PORT'] == 443 else ':{0}'.format(web.ctx.env['SERVER_PORT']),
+            port='' if web.ctx.env['SERVER_PORT'] == 443 else ':{0}'.format(web.ctx.env['SERVER_PORT']),
             key=key)
-        body = \
-"""
+        body = """
 Hello, {name}
 
 Thank you for registering with Riolet. To complete your registration, please follow the link below:
