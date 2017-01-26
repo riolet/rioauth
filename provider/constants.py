@@ -1,5 +1,4 @@
 import os
-import sys
 
 DEBUG_MODE = True
 
@@ -11,8 +10,6 @@ DBFILENAME = 'dev.db'
 
 # used in setting cookies
 REMEMBER_COOKIE_NAME = "rememberme"
-
-sys.path.append(BASE_PATH)
 
 urls = (
     '/', 'pages.account.Account',

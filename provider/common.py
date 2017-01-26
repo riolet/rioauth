@@ -25,8 +25,8 @@ def generate_salt(length):
     """
     # base64 stores 6 bits per symbol but os.urandom gives 8 bits per symbol
     bytes_needed = int(math.ceil(length * 6.0 / 8.0))
-    bytes = os.urandom(bytes_needed)
-    encoded = b64_url_encode(bytes)
+    random_bytes = os.urandom(bytes_needed)
+    encoded = b64_url_encode(random_bytes)
     return encoded[:length]
 
 
