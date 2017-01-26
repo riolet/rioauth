@@ -1,5 +1,6 @@
 import time
 
+
 class AuthorizationCodes(object):
     def __init__(self, db):
         self.db = db
@@ -29,7 +30,7 @@ class AuthorizationCodes(object):
         :param redirect_uri: string; the redirect_uri to send the browser back to after authorization
         :return: None
         """
-        #the authorization code table is expected to be active (adding/removing)
+        # the authorization code table is expected to be active (adding/removing)
         # but always small. remove_all_expired() should be very cheap.
         self.remove_all_expired()
         self.remove(code)
@@ -42,7 +43,8 @@ class AuthorizationCodes(object):
                        redirect_uri=redirect_uri)
         return
 
-    def is_expired(self, row):
+    @staticmethod
+    def is_expired(row):
         return int(row.expiration_time) <= (time.time())
 
     def get(self, auth_code):
@@ -51,7 +53,7 @@ class AuthorizationCodes(object):
         :param auth_code: string; The unique authorization code to retrieve details about
         :return: the database row if a match is found, else None
         """
-        qvars ={
+        qvars = {
             'code': auth_code
         }
         where = 'code=$code'

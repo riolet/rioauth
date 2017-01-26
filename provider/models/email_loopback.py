@@ -29,7 +29,8 @@ class EmailLoopback(object):
 
         return key
 
-    def is_expired(self, row):
+    @staticmethod
+    def is_expired(row):
         """
         :return: True if row exists and is expired. Otherwise False.
         """
@@ -37,7 +38,7 @@ class EmailLoopback(object):
 
     def get(self, key):
         print("getting key {0}".format(key))
-        qvars = { 'key': key }
+        qvars = {'key': key}
         rows = self.db.select(self.table, where='secret_key=$key', vars=qvars)
         row = rows.first()
         return row

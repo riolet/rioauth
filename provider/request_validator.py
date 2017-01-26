@@ -161,12 +161,9 @@ class MyRequestValidator(RequestValidator):
 
     def validate_bearer_token(self, token, scopes, request):
         # Remember to check expiration and scope membership
-        # TODO: Remember to check expiration and scope membership
         print("validate_bearer_token")
-        # TODO: why are these empty?
-        print("token is {0}".format(token))
-        print("scope is {0}".format(scopes))
-        # print("request is {0}".format(request))
+
+        # get_access checkes for expiration and returns None if expired.
         db_token = common.bearer_tokens.get_access(token)
         print("db token is {0}".format(db_token))
         if db_token and all([scope in db_token.scopes for scope in scopes]):

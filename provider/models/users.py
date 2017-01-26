@@ -46,8 +46,8 @@ class Users:
         qvars = {
             'uid': user_id
         }
-        dels = self.db.delete(self.table, where='id=$uid', vars=qvars)
-        return dels == 1
+        deleted_rows = self.db.delete(self.table, where='id=$uid', vars=qvars)
+        return deleted_rows == 1
 
     def validate_login_cookie(self, user_id, token, cookie_hash):
         """

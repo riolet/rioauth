@@ -58,7 +58,8 @@ class Applications(object):
         return list(rows)
 
     def get_all(self):
-        rows = self.db.select(self.table, what="app_id, owner_id, nicename, scopes, redirect_uris, default_scopes, default_redirect_uri")
+        rows = self.db.select(self.table, what="app_id, owner_id, nicename, scopes, "
+                                               "redirect_uris, default_scopes, default_redirect_uri")
         return list(rows)
 
     def get(self, application_id):
@@ -77,8 +78,8 @@ class Applications(object):
         qvars = {
             'aid': app_id
         }
-        dels = self.db.delete(self.table, where='app_id=$aid', vars=qvars)
-        return dels == 1
+        deleted_rows = self.db.delete(self.table, where='app_id=$aid', vars=qvars)
+        return deleted_rows == 1
 
     def add(self, name, owner_id, scopes, redirect_uris, default_scopes=None, default_redirect_uri=None):
         """

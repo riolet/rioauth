@@ -37,12 +37,10 @@ class Subscriptions(object):
         return self.db.update(self.table, "app_id=$aid and user_id=$uid", status=status, vars=qvars)
 
     def get(self, app_id, user_id):
-        print("SUBSCRIPTIONS: getting app/user {}/{}".format(app_id, user_id))
         qvars = {
             'aid': app_id,
             'uid': user_id
         }
-        print('query: {0}'.format(self.db.select(self.table, where="app_id=$aid and user_id=$uid", vars=qvars, _test=True)))
         rows = self.db.select(self.table, where="app_id=$aid and user_id=$uid", vars=qvars)
         return rows.first()
 
@@ -54,8 +52,8 @@ class Subscriptions(object):
         qvars = {
             'sid': sub_id
         }
-        dels = self.db.delete(self.table, where='subscription_id=$sid', vars=qvars)
-        return dels == 1
+        deleted_rows = self.db.delete(self.table, where='subscription_id=$sid', vars=qvars)
+        return deleted_rows == 1
 
     def add(self, app_id, user_id, subscription_type):
         exists = self.get(app_id, user_id)
