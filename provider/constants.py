@@ -1,10 +1,15 @@
 import os
 import sys
 
+DEBUG_MODE = True
+
 BASE_PATH = os.path.dirname(__file__)
+
+# Used for database access
 DBPATH = ['data']
 DBFILENAME = 'dev.db'
-DOMAIN = 'auth.local'
+
+# used in setting cookies
 REMEMBER_COOKIE_NAME = "rememberme"
 
 sys.path.append(BASE_PATH)

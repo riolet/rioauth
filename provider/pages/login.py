@@ -9,14 +9,24 @@ class Login(base.Page):
         base.Page.__init__(self, "Riolet Login")
         self.user = None
 
-    def save_cookie(self, account_id):
+    @staticmethod
+    def save_cookie(account_id):
         print("Saving, for remembering later.")
         cookie_text = common.users.get_login_cookie(account_id)
         duration = 31536000  # 60*60*24*365 # 1 year-ish
+        domain = web.ctx.environ.get('HTTP_HOST')
+        if domain:
+            colon = domain.find(":")
+            if colon != -1:
+                domain = domain[:colon]
+        else:
+            domain = web.ctx.environ['SERVER_NAME']
         # TODO: does the domain or path need to be set?
-        web.setcookie(constants.REMEMBER_COOKIE_NAME, cookie_text, expires=duration, domain=constants.DOMAIN, path="/", secure=True, httponly=True)
+        web.setcookie(constants.REMEMBER_COOKIE_NAME, cookie_text, expires=duration,
+                      domain=domain, path="/", secure=True, httponly=True)
 
-    def read_cookie(self):
+    @staticmethod
+    def read_cookie():
         # Must be able to read cookie
         cookie = web.cookies().get(constants.REMEMBER_COOKIE_NAME)
         if not cookie:
@@ -88,4 +98,3 @@ class Login(base.Page):
         if 'login_redirect' in common.session:
             destination = common.session['login_redirect']
         raise web.seeother(destination)
-

@@ -10,7 +10,14 @@ class Logout(base.Page):
 
     def GET(self):
         # remove any login cookies
-        web.setcookie(constants.REMEMBER_COOKIE_NAME, "", expires=-1, domain=constants.DOMAIN, path="/")
+        domain = web.ctx.environ.get('HTTP_HOST')
+        if domain:
+            colon = domain.find(":")
+            if colon != -1:
+                domain = domain[:colon]
+        else:
+            domain = web.ctx.environ['SERVER_NAME']
+        web.setcookie(constants.REMEMBER_COOKIE_NAME, "", expires=-1, domain=domain, path="/")
 
         destination = '/'
         if 'logout_redirect' in common.session:
