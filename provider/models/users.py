@@ -92,7 +92,7 @@ class Users:
         user = rows.first()
         return user
 
-    def get_by_id(self, account, what):
+    def get_by_id(self, account, what='*'):
         qvars = {
             "aid": account
         }

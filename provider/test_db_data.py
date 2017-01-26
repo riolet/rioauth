@@ -27,6 +27,7 @@ except KeyError:
 
 
 
+# Add an application "Widget Builder"
 app = common.applications.get_all_by_owner(boss_id)
 if len(app) > 0:
     app_id = app[0].app_id
@@ -38,10 +39,10 @@ else:
         redirect_uris=['https://app.local:8080/private', 'https://app.local:8080/login'],
         default_redirect_uri='https://app.local:8080/private')
 
-
+# Add a subscription by Bob the Customer to Widget Builder
 try:
     common.subscriptions.add(app_id=app_id,
          user_id=user_id,
-         subscription_type='Basic Package')
+         subscription_type='Basic')
 except KeyError:
     pass
