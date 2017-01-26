@@ -54,26 +54,33 @@ form {
     </div>
   <div class="ui segments">
     <div class="ui green segment">
-      $if user['subscriptions']:
+      $if user['subscriptions'] or user['apps']:
         <p>You have access to:</p>
         <ul>
-          $for sub in user['subscriptions']:
-            $if sub['status'] == 'active':
-              $if 'default_redirect_uri' in sub and len(sub['default_redirect_uri']) > 0:
-                <li><a href="$sub['default_redirect_uri']">$sub['nicename']</a>
-              $else:
-                <li>$sub['nicename']
-              <form method="POST" action="/">
-                <input type="hidden" name="disable_sub", value="$sub['subscription_id']">
-                <button class="ui compact basic button" type="submit">Deactivate</button>
-              </form></li>
-            $else:
-              <li><span class="disabled">$sub['nicename']</span>
+          $if user['subscriptions']:
+            $for sub in user['subscriptions']:
+              $if sub['status'] == 'active':
+                $if 'default_redirect_uri' in sub and len(sub['default_redirect_uri']) > 0:
+                  <li><a href="$sub['default_redirect_uri']">$sub['nicename']</a>
+                $else:
+                  <li>$sub['nicename']
                 <form method="POST" action="/">
-                  <input type="hidden" name="enable_sub", value="$sub['subscription_id']">
-                  <button class="ui compact basic button" type="submit">Reactivate</button>
-                </form>
-              </li>
+                  <input type="hidden" name="disable_sub", value="$sub['subscription_id']">
+                  <button class="ui compact basic button" type="submit">Deactivate</button>
+                </form></li>
+              $else:
+                <li><span class="disabled">$sub['nicename']</span>
+                  <form method="POST" action="/">
+                    <input type="hidden" name="enable_sub", value="$sub['subscription_id']">
+                    <button class="ui compact basic button" type="submit">Reactivate</button>
+                  </form>
+                </li>
+          $if user['apps']:
+            $for app in user['apps']:
+              $if 'default_redirect_uri' in app and len(app['default_redirect_uri']) > 0:
+                <li><a href="$app['default_redirect_uri']">$app['nicename']</a>
+              $else:
+                <li>$app['nicename']</li>
         </ul>
       $else:
         <p>You are not connected to any apps.</p>

@@ -1,9 +1,13 @@
+import re
 import web
 import common
 import base
 
 
 class Register(base.Page):
+    def __init__(self):
+        base.Page.__init__(self, "Register")
+
     def GET(self):
         # show login page
         return common.render.register()

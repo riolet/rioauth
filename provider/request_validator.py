@@ -2,6 +2,9 @@ import inspect
 import common
 from oauthlib.oauth2 import RequestValidator
 from oauthlib.oauth2.rfc6749.clients import WebApplicationClient
+import logging
+
+log = logging.getLogger('oauthlib')
 
 
 class MyRequestValidator(RequestValidator):
@@ -11,14 +14,14 @@ class MyRequestValidator(RequestValidator):
 
     def validate_client_id(self, app_id, request, *args, **kwargs):
         # Simple validity check, does client exist? Not banned?
-        print("validate app id")
+        log.log(logging.DEBUG, "validate app id")
         app = common.applications.exists(app_id)
         return app
 
     def validate_redirect_uri(self, app_id, redirect_uri, request, *args, **kwargs):
         # Is the client allowed to use the supplied redirect_uri? i.e. has
         # the client previously registered this EXACT redirect uri.
-        print("validate redirect uri")
+        log.log(logging.DEBUG, "validate redirect uri")
         app = common.applications.get(app_id)
         uris = app.redirect_uris.split(' ')
         return redirect_uri and redirect_uri in uris
@@ -27,13 +30,13 @@ class MyRequestValidator(RequestValidator):
         # The redirect used if none has been supplied.
         # Prefer your clients to pre register a redirect uri rather than
         # supplying one on each authorization request.
-        print("get default redirect uri")
+        log.log(logging.DEBUG, "get default redirect uri")
         app = common.applications.get(app_id)
         return app.default_redirect_uri
 
     def validate_scopes(self, app_id, scopes, client, request, *args, **kwargs):
         # Is the client allowed to access the requested scopes?
-        print("validate_scopes")
+        log.log(logging.DEBUG, "validate_scopes")
         app = common.applications.get(app_id)
         app_scopes = app.scopes.split(' ')
         return all([requested_scope in app_scopes for requested_scope in scopes])
@@ -41,7 +44,7 @@ class MyRequestValidator(RequestValidator):
     def get_default_scopes(self, app_id, request, *args, **kwargs):
         # Scopes a client will authorize for if none are supplied in the
         # authorization request.
-        print("get_default_scopes")
+        log.log(logging.DEBUG, "get_default_scopes")
         app = common.applications.get(app_id)
         return app.default_scopes
 
@@ -49,7 +52,7 @@ class MyRequestValidator(RequestValidator):
         # Clients should only be allowed to use one type of response type, the
         # one associated with their one allowed grant type.
         # In this case it must be "code".
-        print("validate response type")
+        log.log(logging.DEBUG, "validate response type")
         app = common.applications.get(app_id)
         return response_type == app.response_type
 
@@ -59,7 +62,7 @@ class MyRequestValidator(RequestValidator):
         # Remember to associate it with request.scopes, request.redirect_uri
         # request.client, request.state and request.user (the last is passed in
         # post_authorization credentials, i.e. { 'user': request.user}.
-        print('save_authorization_code')
+        log.log(logging.DEBUG, 'save_authorization_code')
         code_string = code['code']
         state = code.get('state', '')
         common.authorization_codes.set(
@@ -75,7 +78,7 @@ class MyRequestValidator(RequestValidator):
     def authenticate_client(self, request, *args, **kwargs):
         # Whichever authentication method suits you, HTTP Basic might work
         # see https://github.com/evonove/django-oauth-toolkit/blob/master/oauth2_provider/oauth2_validators.py#L51
-        print("authenticate_client")
+        log.log(logging.DEBUG, "authenticate_client")
         authenticated = True
 
         app_secret = request.client_secret
@@ -98,7 +101,7 @@ class MyRequestValidator(RequestValidator):
     def validate_code(self, app_id, code, client, request, *args, **kwargs):
         # Validate the code belongs to the client. Add associated scopes,
         # state and user to request.scopes and request.user.
-        print("validate_code")
+        log.log(logging.DEBUG, "validate_code")
 
         # App_id has been confirmed. does the code match the app?
         # make sure the code applies to the (previously authenticated) client/app.
@@ -117,7 +120,7 @@ class MyRequestValidator(RequestValidator):
 
     def confirm_redirect_uri(self, app_id, code, redirect_uri, client, *args, **kwargs):
         # You did save the redirect uri with the authorization code right?
-        print("confirm_redirect_uri")
+        log.log(logging.DEBUG, "confirm_redirect_uri")
 
         requested_uri = redirect_uri
         authorized_uri = client.auth_redirect_uri
@@ -161,11 +164,10 @@ class MyRequestValidator(RequestValidator):
 
     def validate_bearer_token(self, token, scopes, request):
         # Remember to check expiration and scope membership
-        print("validate_bearer_token")
+        log.log(logging.DEBUG, "validate_bearer_token")
 
         # get_access checks for expiration and returns None if expired.
         db_token = common.bearer_tokens.get_access(token)
-        print("db token is {0}".format(db_token))
         if db_token and all([scope in db_token.scopes for scope in scopes]):
             request.user = db_token.user_id
             request.scopes = db_token.scopes
@@ -178,13 +180,13 @@ class MyRequestValidator(RequestValidator):
         # return its scopes, these will be passed on to the refreshed
         # access token if the client did not specify a scope during the
         # request.
-        print("get_original_scopes")
+        log.log(logging.DEBUG, "get_original_scopes")
         db_token = common.bearer_tokens.get_refresh(refresh_token)
         scopes = db_token.scopes.split(' ')
         return scopes
 
     def validate_refresh_token(self, refresh_token, client, request, *args, **kwargs):
-        print("validate_refresh_token")
+        log.log(logging.DEBUG, "validate_refresh_token")
         db_token = common.bearer_tokens.get_refresh(refresh_token)
         if db_token:
             request.user = db_token.user_id
@@ -195,20 +197,20 @@ class MyRequestValidator(RequestValidator):
 
     def get_id_token(self, token, token_handler, request):
         # for OpenID
-        print("get_id_token")
+        log.log(logging.DEBUG, "get_id_token")
         print(token)
         print(token_handler)
         print(request)
         raise NotImplemented("{0} not implemented".format(inspect.currentframe().f_code.co_name))
 
     def revoke_token(self, token, token_type_hint, request, *args, **kwargs):
-        print("revoke_token")
+        log.log(logging.DEBUG, "revoke_token")
         common.bearer_tokens.delete_token(token_type_hint, token)
         raise NotImplemented("{0} not implemented".format(inspect.currentframe().f_code.co_name))
 
     def validate_user_match(self, id_token_hint, scopes, claims, request):
         # for OpenID
-        print("validate_user_match")
+        log.log(logging.DEBUG, "validate_user_match")
         print(id_token_hint)
         print(scopes)
         print(claims)
@@ -217,19 +219,19 @@ class MyRequestValidator(RequestValidator):
 
     def validate_silent_login(self, request):
         # for OpenID
-        print("validate_silent_login")
+        log.log(logging.DEBUG, "validate_silent_login")
         print(request)
         raise NotImplemented("{0} not implemented".format(inspect.currentframe().f_code.co_name))
 
     def validate_silent_authorization(self, request):
         # for OpenID
-        print("validate_silent_authorization")
+        log.log(logging.DEBUG, "validate_silent_authorization")
         print(request)
         raise NotImplemented("{0} not implemented".format(inspect.currentframe().f_code.co_name))
 
     def validate_user(self, username, password, client, request, *args, **kwargs):
         # for password credentials (not bearer tokens)
-        print("validate_user")
+        log.log(logging.DEBUG, "validate_user")
         print(username)
         print(password)
         print(client)

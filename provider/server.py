@@ -2,14 +2,14 @@ import logging
 import sys
 import os
 sys.path.append(os.path.dirname(__file__))
-import web
-from web.wsgiserver import CherryPyWSGIServer
 import constants
+import web
+web.config.debug = constants.DEBUG
+from web.wsgiserver import CherryPyWSGIServer
 import common
-web.config.debug = constants.DEBUG_MODE
 
 # enable logging, while under development
-if constants.DEBUG_MODE:
+if constants.DEBUG:
     log = logging.getLogger('oauthlib')
     log.addHandler(logging.StreamHandler(sys.stdout))
     log.setLevel(logging.DEBUG)
@@ -19,7 +19,17 @@ CherryPyWSGIServer.ssl_certificate = "./localhost.crt"
 CherryPyWSGIServer.ssl_private_key = "./localhost.key"
 
 app = web.application(constants.urls, globals())
-common.session = web.session.Session(app, common.session_store)
+
+
+# set the session
+if constants.DEBUG:
+    if web.config.get('_session') is None:
+        common.session = web.session.Session(app, common.session_store)
+        web.config._session = common.session
+    else:
+        common.session = web.config._session
+else:  # not debug mode
+    common.session = web.session.Session(app, common.session_store)
 
 if __name__ == "__main__":
     app.run()

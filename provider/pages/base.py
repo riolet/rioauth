@@ -1,6 +1,7 @@
 from urllib import quote
 import web
 import common
+import constants
 
 
 class Page(object):
@@ -16,7 +17,8 @@ class Page(object):
         self.info = []
         self.request = None
 
-        common.report_init(self.uri, self.page_title, web.ctx.env['REQUEST_METHOD'], self.data)
+        if constants.DEBUG:
+            common.report_init(self.uri, self.page_title, web.ctx.env['REQUEST_METHOD'], self.data)
 
     @staticmethod
     def reconstruct_uri():
