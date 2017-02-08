@@ -59,7 +59,7 @@ class Page(object):
         #headers.pop("wsgi.input", None)
 
         # wait, maybe headers are okay...
-        headers = web.ctx.headers
+        headers = {k: v for k, v in web.ctx.headers}
 
         return http_method, body, headers
 
