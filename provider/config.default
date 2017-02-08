@@ -1,0 +1,12 @@
+# To edit values locally, duplicate this file and name it "config" then edit that new file.
+
+[domain]
+uri_scheme = https
+uri_authority = www.example.com
+
+[smtp]
+server = smtp.gmail.com
+port = 587
+username = from_address@gmail.com
+password = secret
+starttls = True

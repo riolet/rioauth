@@ -79,19 +79,30 @@ authorization_codes = AuthorizationCodes(_db)
 bearer_tokens = BearerTokens(_db)
 email_loopback = EmailLoopback(_db)
 
-# configure session storage. Session variable is filled in from server.py
+# Configure session storage. Session variable is filled in from server.py
 session_store = web.session.DBStore(_db, 'sessions')
 session = None
 
 # Configure template rendering
 render = web.template.render(os.path.join(constants.BASE_PATH, 'templates'))
 
+config = ConfigParser.SafeConfigParser()
+
+# read the defaults, then overwrite that with anything in config
+config.read([os.path.join(constants.BASE_PATH, 'config.default'),
+             os.path.join(constants.BASE_PATH, 'config')])
+
 # Configure Sendmail
-mail_config = ConfigParser.SafeConfigParser()
-mail_config.read(os.path.join(constants.BASE_PATH, 'sendmail.cfg'))
-if mail_config.has_section('smtp'):
-    web.config.smtp_server = mail_config.get('smtp', 'server')
-    web.config.smtp_port = int(mail_config.get('smtp', 'port'))
-    web.config.smtp_username = mail_config.get('smtp', 'username')
-    web.config.smtp_password = mail_config.get('smtp', 'password')
-    web.config.smtp_starttls = mail_config.get('smtp', 'starttls').lower() == 'true'
+web.config.smtp_server = config.get('smtp', 'server')
+web.config.smtp_port = int(config.get('smtp', 'port'))
+web.config.smtp_username = config.get('smtp', 'username')
+web.config.smtp_password = config.get('smtp', 'password')
+web.config.smtp_starttls = config.get('smtp', 'starttls').lower() == 'true'
+
+# Configure path
+# This is defined for crafting absolute paths because relative
+# redirects using web.seeother() were giving ugly URIs like
+# "https://example.com/wsgipython.py/login"
+uri_scheme = config.get('domain', 'uri_scheme')
+uri_authority = config.get('domain', 'uri_authority')
+uri_prefix = "{0}://{1}".format(uri_scheme, uri_authority)
