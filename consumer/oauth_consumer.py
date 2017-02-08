@@ -101,4 +101,8 @@ class Authorization(object):
 
         # TODO: re-enable verify (for SSL)
         response = oauth.get(protected_url, verify=False)
-        return json.loads(response.content)
+        try:
+            decoded_response = json.loads(response.content)
+        except ValueError:
+            decoded_response = {'body': response}
+        return decoded_response

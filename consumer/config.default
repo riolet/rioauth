@@ -5,6 +5,7 @@ client_secret = _CbJp1cvNDQ33ptbfjc5l70nZfGW0h81
 [authentication]
 authorization_url = https://auth.local:8081/authorize
 token_url = https://auth.local:8081/token
+resource = https://auth.local:8081/resource
 
 [general]
 scope = basic

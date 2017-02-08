@@ -91,21 +91,24 @@ class Private(object):
             print("redirecting to /public")
             raise web.seeother("/public")
 
-        #request a resource with the token
+        # request a resource with the token
         print("Requesting resource")
-        resource = self.oauth.request("https://auth.local:8081/resource")
+        resource = self.oauth.request(config.get('authentication', 'resource'))
 
         # process resource response
-        status = resource.pop('status')
+        status = resource.pop('status', None)
         username = "unknown user"
         message = 'No message.'
-        if status == 'failed':
-            message = resource.get('message') or message
+        if status:
+            if status == 'failed':
+                message = resource.get('message') or message
+            else:
+                if 'user' in resource and 'name' in resource['user']:
+                    username = resource['user']['name']
+                if 'subscription' in resource:
+                    message = repr(resource['subscription'])
         else:
-            if 'user' in resource and 'name' in resource['user']:
-                username = resource['user']['name']
-            if 'subscription' in resource:
-                message = repr(resource['subscription'])
+            message = resource
 
         # finally, render the page
         print("Rendering page")
@@ -207,7 +210,7 @@ class Logout(object):
 
 # Manage routing from here. Regex matches URL and chooses class by name
 urls = (
-    '/', 'Public',  # Omit the overview page and go straight to map (no content in overview anyway)
+    '/', 'Public',
     '/public', 'Public',
     '/private', 'Private',
     '/login', 'Login',
@@ -219,7 +222,7 @@ DBPATH = ['data']
 DBFILENAME = 'dev.db'
 
 config = SafeConfigParser()
-config.read("app.cfg")
+config.read(["config.default", "config"])
 
 CherryPyWSGIServer.ssl_certificate = "./" + config.get('ssl', 'certificate')
 CherryPyWSGIServer.ssl_private_key = "./" + config.get('ssl', 'key')
