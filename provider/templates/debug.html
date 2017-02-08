@@ -1,4 +1,4 @@
-$def with (sorted, env, svars, session)
+$def with (sorted, env, svars, session, config)
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -59,6 +59,43 @@ $def with (sorted, env, svars, session)
         <tr>
           <td>$k</td>
           <td>$session[k]</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="ui segment">
+    <h1 class="header">Config variables</h1>
+    <table class="ui very compact definition table">
+      <thead>
+        <tr>
+          <th>Key</th>
+          <th>Value</th>
+        </tr>
+      </thead>
+      <tbody>
+      $for k in sorted(config.keys()):
+        <tr>
+          <td>$k</td>
+          $if k == "session_parameters":
+            <td>
+              <table class="ui very compact definition table">
+                <thead>
+                  <tr>
+                    <th>Key</th>
+                    <th>Value</th>
+                  </tr>
+                </thead>
+                <tbody>
+                $for j in sorted(config[k].keys()):
+                  <tr>
+                    <td>$j</td>
+                    <td>$config[k][j]</td>
+                  </tr>
+                </tbody>
+              </table>
+            </td>
+          $else:
+            <td>$config[k]</td>
         </tr>
       </tbody>
     </table>

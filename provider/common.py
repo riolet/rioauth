@@ -88,9 +88,10 @@ render = web.template.render(os.path.join(constants.BASE_PATH, 'templates'))
 
 # Configure Sendmail
 mail_config = ConfigParser.SafeConfigParser()
-mail_config.read('sendmail.cfg')
-web.config.smtp_server = mail_config.get('smtp', 'server')
-web.config.smtp_port = int(mail_config.get('smtp', 'port'))
-web.config.smtp_username = mail_config.get('smtp', 'username')
-web.config.smtp_password = mail_config.get('smtp', 'password')
-web.config.smtp_starttls = mail_config.get('smtp', 'starttls').lower() == 'true'
+mail_config.read(os.path.join(constants.BASE_PATH, 'sendmail.cfg'))
+if mail_config.has_section('smtp'):
+    web.config.smtp_server = mail_config.get('smtp', 'server')
+    web.config.smtp_port = int(mail_config.get('smtp', 'port'))
+    web.config.smtp_username = mail_config.get('smtp', 'username')
+    web.config.smtp_password = mail_config.get('smtp', 'password')
+    web.config.smtp_starttls = mail_config.get('smtp', 'starttls').lower() == 'true'

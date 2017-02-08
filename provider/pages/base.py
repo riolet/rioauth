@@ -36,7 +36,9 @@ class Page(object):
                 if web.ctx.environ['SERVER_PORT'] != '80':
                     url += ':' + web.ctx.environ['SERVER_PORT']
 
-        url += quote(web.ctx.environ.get('SCRIPT_NAME', ''))
+        # This one causes problems when deployed using WSGI
+        #url += quote(web.ctx.environ.get('SCRIPT_NAME', ''))
+
         url += quote(web.ctx.environ.get('PATH_INFO', ''))
         if web.ctx.environ.get('QUERY_STRING'):
             url += '?' + web.ctx.environ['QUERY_STRING']

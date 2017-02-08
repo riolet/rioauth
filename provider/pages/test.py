@@ -11,5 +11,6 @@ class Env(base.Page):
         env = web.ctx.env
         self_vars = self.__dict__
         session = common.session
+        config = dict(web.config)
 
-        return common.render.debug(sorted, env, self_vars, session)
+        return common.render.debug(sorted, env, self_vars, session, config)
