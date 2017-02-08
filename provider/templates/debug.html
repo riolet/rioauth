@@ -1,0 +1,68 @@
+$def with (sorted, env, svars, session)
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Test</title>
+  <link rel="stylesheet" type="text/css" href="/static/css/semantic.min.css">
+  <script src="/static/js/jquery-3.1.0.min.js"></script>
+  <script src="/static/js/semantic.min.js"></script>
+</head>
+<div class="ui container">
+  <div class="ui segment">
+    <h1 class="header">Environment variables</h1>
+    <table class="ui very compact definition table">
+      <thead>
+        <tr>
+          <th>Key</th>
+          <th>Value</th>
+        </tr>
+      </thead>
+      <tbody>
+      $for k in sorted(env.keys()):
+        <tr>
+          <td>$k</td>
+          <td>$env[k]</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="ui segment">
+    <h1 class="header">Self variables</h1>
+    <table class="ui very compact definition table">
+      <thead>
+        <tr>
+          <th>Key</th>
+          <th>Value</th>
+        </tr>
+      </thead>
+      <tbody>
+      $for k in sorted(svars.keys()):
+        <tr>
+          <td>$k</td>
+          <td>$svars[k]</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="ui segment">
+    <h1 class="header">Session variables</h1>
+    <table class="ui very compact definition table">
+      <thead>
+        <tr>
+          <th>Key</th>
+          <th>Value</th>
+        </tr>
+      </thead>
+      <tbody>
+      $for k in sorted(session.keys()):
+        <tr>
+          <td>$k</td>
+          <td>$session[k]</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</body>
+</html>

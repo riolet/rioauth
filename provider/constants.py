@@ -11,7 +11,7 @@ DBFILENAME = 'dev.db'
 # used in setting cookies
 REMEMBER_COOKIE_NAME = "rememberme"
 
-urls = (
+urls = [
     '/', 'pages.account.Account',
     '/login', 'pages.login.Login',
     '/admin', 'pages.admin.Admin',
@@ -23,5 +23,7 @@ urls = (
     '/resource', 'pages.resource.Resource',
     '/resetpassword', 'pages.resetpassword.ResetPassword',
     '/changepassword', 'pages.changepassword.ChangePassword',
-    '/confirmemail', 'pages.confirmemail.ConfirmEmail',
-)
+    '/confirmemail', 'pages.confirmemail.ConfirmEmail'
+]
+if DEBUG:
+    urls.extend(['/_debug_', 'pages.test.Env'])
