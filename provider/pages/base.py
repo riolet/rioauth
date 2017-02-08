@@ -45,8 +45,7 @@ class Page(object):
 
         return url
 
-    @staticmethod
-    def extract_params():
+    def extract_params(self):
         http_method = web.ctx.method
         body = web.ctx.get('data', '')
 
@@ -54,12 +53,10 @@ class Page(object):
         # and Authorization is "HTTP_AUTHORIZATION"
         # See this for renaming details:
         # https://www.python.org/dev/peps/pep-0333/#environ-variables
-        #headers = web.ctx.env.copy()
-        #headers.pop("wsgi.errors", None)
-        #headers.pop("wsgi.input", None)
-
-        # wait, maybe headers are okay...
-        headers = {k: v for k, v in web.ctx.headers}
+        headers = web.ctx.env.copy()
+        headers.pop("wsgi.errors", None)
+        headers.pop("wsgi.input", None)
+        headers.pop("wsgi.file_wrapper", None)
 
         return http_method, body, headers
 
