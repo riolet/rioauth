@@ -70,6 +70,19 @@ class AuthenticationError(Exception):
     pass
 
 
+class SeeOther(web.Redirect):
+    def __init__(self, url, absolute=False):
+        if url[0] == '/':
+            url = uri_prefix + url
+            absolute = True
+        if constants.DEBUG:
+            print("Redirecting (see other) to {0}".format(url))
+
+        web.Redirect.__init__(self, url, '303 See Other', absolute=absolute)
+
+web.seeother = SeeOther
+
+
 # Configure database access
 _db = dbsetup.get_db()
 users = Users(_db)

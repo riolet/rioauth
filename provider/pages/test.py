@@ -13,4 +13,6 @@ class Env(base.Page):
         session = common.session
         config = dict(web.config)
 
-        return common.render.debug(sorted, env, self_vars, session, config)
+        context = web.ctx
+
+        return common.render.debug(sorted, env, self_vars, session, config, context)
