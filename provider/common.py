@@ -92,16 +92,12 @@ authorization_codes = AuthorizationCodes(_db)
 bearer_tokens = BearerTokens(_db)
 email_loopback = EmailLoopback(_db)
 
-# Configure session storage. Session variable is filled in from server.py
-session_store = web.session.DBStore(_db, 'sessions')
-session = None
-
 # Configure template rendering
 render = web.template.render(os.path.join(constants.BASE_PATH, 'templates'))
 
-config = ConfigParser.SafeConfigParser()
 
-# read the defaults, then overwrite that with anything in config
+# read the default config, then overwrite that with anything in config
+config = ConfigParser.SafeConfigParser()
 config.read([os.path.join(constants.BASE_PATH, 'config.default'),
              os.path.join(constants.BASE_PATH, 'config')])
 
@@ -119,3 +115,9 @@ web.config.smtp_starttls = config.get('smtp', 'starttls').lower() == 'true'
 uri_scheme = config.get('domain', 'uri_scheme')
 uri_authority = config.get('domain', 'uri_authority')
 uri_prefix = "{0}://{1}".format(uri_scheme, uri_authority)
+
+# Configure session storage. Session variable is filled in from server.py
+web.config.session_parameters['cookie_domain'] = uri_authority
+web.config.session_parameters['cookie_path'] = "/"
+session_store = web.session.DBStore(_db, 'sessions')
+session = None
