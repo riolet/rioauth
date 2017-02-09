@@ -1,6 +1,7 @@
 import os
 import math
 import base64
+import logging
 import dbsetup
 import constants
 import web
@@ -12,6 +13,7 @@ from models.authorization_codes import AuthorizationCodes
 from models.bearer_tokens import BearerTokens
 from models.email_loopback import EmailLoopback
 
+log = logging.getLogger('pages')
 
 def b64_url_encode(bytes_):
     return base64.b64encode(bytes_, "-_")
@@ -81,8 +83,8 @@ class SeeOther(web.Redirect):
         if url[0] == '/':
             url = constants.uri_prefix + url
             absolute = True
-        if constants.DEBUG:
-            print("Redirecting (see other) to {0}".format(url))
+
+        log.debug("Redirecting (see other) to {0}".format(url))
 
         web.Redirect.__init__(self, url, '303 See Other', absolute=absolute)
 

@@ -10,8 +10,11 @@ import common
 # enable logging, while under development
 if constants.DEBUG:
     log = logging.getLogger('oauthlib')
-    log.addHandler(logging.StreamHandler(sys.stdout))
+    log.addHandler(logging.StreamHandler(sys.stderr))
     log.setLevel(logging.DEBUG)
+    log2 = logging.getLogger('pages')
+    log2.addHandler(logging.StreamHandler(sys.stderr))
+    log2.setLevel(logging.DEBUG)
 
 # openssl req -x509 -sha256 -nodes -newkey rsa:2048 -days 365 -keyout localhost.key -out localhost.crt
 if constants.USE_TLS:
