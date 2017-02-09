@@ -5,7 +5,6 @@ sys.path.append(os.path.dirname(__file__))
 import constants
 import web
 web.config.debug = constants.DEBUG
-from web.wsgiserver import CherryPyWSGIServer
 import common
 
 # enable logging, while under development
@@ -15,8 +14,10 @@ if constants.DEBUG:
     log.setLevel(logging.DEBUG)
 
 # openssl req -x509 -sha256 -nodes -newkey rsa:2048 -days 365 -keyout localhost.key -out localhost.crt
-CherryPyWSGIServer.ssl_certificate = "./localhost.crt"
-CherryPyWSGIServer.ssl_private_key = "./localhost.key"
+if constants.USE_TLS:
+    from web.wsgiserver import CherryPyWSGIServer
+    CherryPyWSGIServer.ssl_certificate = os.path.join(constants.BASE_PATH, constants.config.get('constants', 'test_ssl_cert'))
+    CherryPyWSGIServer.ssl_private_key = os.path.join(constants.BASE_PATH, constants.config.get('constants', 'test_ssl_key'))
 
 app = web.application(constants.urls, globals())
 

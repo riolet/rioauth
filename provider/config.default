@@ -1,5 +1,15 @@
 # To edit values locally, duplicate this file and name it "config" then edit that new file.
 
+[constants]
+debug = False
+db_file = dev.db
+db_path = data
+
+# for https during testing
+test_ssl_cert = localhost.crt
+test_ssl_key = localhost.key
+
+
 [domain]
 uri_scheme = https
 uri_authority = www.example.com

@@ -23,10 +23,9 @@ def exec_sql(connection, path):
         connection.query(command)
 
 
-def create_db(base_path, path, filename):
+def create_db(db_path, filename):
 
     # make sure folder exists
-    db_path = os.path.join(base_path, *path)
     if not os.path.exists(db_path):
         os.makedirs(db_path)
 
@@ -46,15 +45,14 @@ def create_session_tables(db, base_path):
 
 
 def db_setup(db, base_path):
-    create_db(base_path, constants.DBPATH, constants.DBFILENAME)
+    create_db(constants.DB_PATH, constants.DB_FILENAME)
     db.query("PRAGMA foreign_keys = ON;")
     create_tables(db, base_path)
     create_session_tables(db, base_path)
 
 
 def get_db():
-    db_path = os.path.join(constants.BASE_PATH, *constants.DBPATH)
-    db_path = os.path.join(db_path, constants.DBFILENAME)
+    db_path = os.path.join(constants.DB_PATH, constants.DB_FILENAME)
 
     db = web.database(dbn='sqlite', db=db_path)
 

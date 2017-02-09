@@ -1,15 +1,22 @@
 import os
-
-DEBUG = False
+import ConfigParser
 
 BASE_PATH = os.path.dirname(__file__)
 
+config = ConfigParser.SafeConfigParser()
+config.read([os.path.join(BASE_PATH, 'config.default'),
+             os.path.join(BASE_PATH, 'config')])
+
+DEBUG = config.get('constants', 'debug').lower() == 'true'
+
 # Used for database access
-DBPATH = ['data']
-DBFILENAME = 'dev.db'
+DB_PATH = os.path.join(BASE_PATH, config.get('constants', 'db_path'))
+DB_FILENAME = config.get('constants', 'db_file')
 
 # used in setting cookies
 REMEMBER_COOKIE_NAME = "rememberme"
+
+USE_TLS = config.get('domain', 'uri_scheme').lower() == 'https'
 
 urls = [
     '/', 'pages.account.Account',

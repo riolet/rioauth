@@ -103,24 +103,19 @@ email_loopback = EmailLoopback(_db)
 render = web.template.render(os.path.join(constants.BASE_PATH, 'templates'))
 
 
-# read the default config, then overwrite that with anything in config
-config = ConfigParser.SafeConfigParser()
-config.read([os.path.join(constants.BASE_PATH, 'config.default'),
-             os.path.join(constants.BASE_PATH, 'config')])
-
 # Configure Sendmail
-web.config.smtp_server = config.get('smtp', 'server')
-web.config.smtp_port = int(config.get('smtp', 'port'))
-web.config.smtp_username = config.get('smtp', 'username')
-web.config.smtp_password = config.get('smtp', 'password')
-web.config.smtp_starttls = config.get('smtp', 'starttls').lower() == 'true'
+web.config.smtp_server = constants.config.get('smtp', 'server')
+web.config.smtp_port = int(constants.config.get('smtp', 'port'))
+web.config.smtp_username = constants.config.get('smtp', 'username')
+web.config.smtp_password = constants.config.get('smtp', 'password')
+web.config.smtp_starttls = constants.config.get('smtp', 'starttls').lower() == 'true'
 
 # Configure path
 # This is defined for crafting absolute paths because relative
 # redirects using web.seeother() were giving ugly URIs like
 # "https://example.com/wsgipython.py/login"
-uri_scheme = config.get('domain', 'uri_scheme')
-uri_authority = config.get('domain', 'uri_authority')
+uri_scheme = constants.config.get('domain', 'uri_scheme')
+uri_authority = constants.config.get('domain', 'uri_authority')
 uri_prefix = "{0}://{1}".format(uri_scheme, uri_authority)
 
 # Configure session storage. Session variable is filled in from server.py
