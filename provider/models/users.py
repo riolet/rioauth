@@ -150,10 +150,12 @@ class Users:
         rows = self.db.select(self.table, where="email=$email", vars=qvars, limit=1)
         user = rows.first()
         if user:
+            print("checking user: ")
+            print("confirmed = {0} ({0.__class__})".format(user.email_confirmed))
             if user.email_confirmed == '1':
                 raise KeyError("Email already exists")
             else:
-                self.delete(user.user_id)
+                self.delete(user.id)
 
         hashed_password = bcrypt.hashpw(password, bcrypt.gensalt())
 

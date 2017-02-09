@@ -34,3 +34,12 @@ urls = [
 ]
 if DEBUG:
     urls.extend(['/_debug_', 'pages.test.Env'])
+
+
+# Configure paths
+# This is defined for crafting absolute paths because relative
+# redirects using web.seeother() were giving ugly URIs like
+# "https://example.com/wsgipython.py/login"
+uri_scheme = config.get('domain', 'uri_scheme')
+uri_authority = config.get('domain', 'uri_authority')
+uri_prefix = "{0}://{1}".format(uri_scheme, uri_authority)

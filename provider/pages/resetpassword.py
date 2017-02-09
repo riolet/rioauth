@@ -1,4 +1,5 @@
 import web
+import constants
 import common
 import base
 
@@ -54,9 +55,8 @@ class ResetPassword(base.Page):
         key = common.email_loopback.add(user_id, redirect_uri, duration=duration)
 
         subject = "Riolet Password Reset"
-        link = "https://{domain}{port}/resetpassword?key={key}".format(
-            domain=web.ctx.env['SSL_SERVER_S_DN_CN'],
-            port='' if web.ctx.env['SERVER_PORT'] == 443 else ':{0}'.format(web.ctx.env['SERVER_PORT']),
+        link = "{uri_prefix}/resetpassword?key={key}".format(
+            uri_prefix=constants.uri_prefix,
             key=key)
         body = """
 Hello {name},

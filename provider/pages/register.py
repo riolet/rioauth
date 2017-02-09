@@ -2,6 +2,7 @@ import re
 import web
 import common
 import base
+import constants
 
 
 class Register(base.Page):
@@ -18,9 +19,8 @@ class Register(base.Page):
         duration = 1800  # 30 minutes
         key = common.email_loopback.add(user_id, '/login', duration=duration)
         subject = "Riolet Registration"
-        link = "https://{domain}{port}/confirmemail?key={key}".format(
-            domain=web.ctx.env['SSL_SERVER_S_DN_CN'],
-            port='' if web.ctx.env['SERVER_PORT'] == 443 else ':{0}'.format(web.ctx.env['SERVER_PORT']),
+        link = "{uri_prefix}/confirmemail?key={key}".format(
+            uri_prefix=constants.uri_prefix,
             key=key)
         body = """
 Hello, {name}
@@ -52,7 +52,7 @@ Riolet
 
         try:
             self.user_id = common.users.add(email, password, name)
-        except common.ValidationError as e:
+        except (common.ValidationError, KeyError) as e:
             self.errors.append('Error: {0}'.format(e.message))
             return common.render.register(self.errors)
 

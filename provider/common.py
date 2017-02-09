@@ -1,7 +1,6 @@
 import os
 import math
 import base64
-import ConfigParser
 import dbsetup
 import constants
 import web
@@ -14,8 +13,8 @@ from models.bearer_tokens import BearerTokens
 from models.email_loopback import EmailLoopback
 
 
-def b64_url_encode(bytes):
-    return base64.b64encode(bytes, "-_")
+def b64_url_encode(bytes_):
+    return base64.b64encode(bytes_, "-_")
 
 
 def generate_salt(length):
@@ -80,7 +79,7 @@ class AuthenticationError(Exception):
 class SeeOther(web.Redirect):
     def __init__(self, url, absolute=False):
         if url[0] == '/':
-            url = uri_prefix + url
+            url = constants.uri_prefix + url
             absolute = True
         if constants.DEBUG:
             print("Redirecting (see other) to {0}".format(url))
@@ -110,13 +109,6 @@ web.config.smtp_username = constants.config.get('smtp', 'username')
 web.config.smtp_password = constants.config.get('smtp', 'password')
 web.config.smtp_starttls = constants.config.get('smtp', 'starttls').lower() == 'true'
 
-# Configure path
-# This is defined for crafting absolute paths because relative
-# redirects using web.seeother() were giving ugly URIs like
-# "https://example.com/wsgipython.py/login"
-uri_scheme = constants.config.get('domain', 'uri_scheme')
-uri_authority = constants.config.get('domain', 'uri_authority')
-uri_prefix = "{0}://{1}".format(uri_scheme, uri_authority)
 
 # Configure session storage. Session variable is filled in from server.py
 # setting cookie_domain breaks local testing:
