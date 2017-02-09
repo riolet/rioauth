@@ -5,6 +5,7 @@ import ConfigParser
 import dbsetup
 import constants
 import web
+import smtplib
 from models.users import Users
 from models.subscriptions import Subscriptions
 from models.applications import Applications
@@ -54,12 +55,18 @@ def response_from_error(e):
     raise web.BadRequest('<h1>Bad Request</h1><p>Error is: {0}</p>'.format(e.description))
 
 
-def sendmail(to_address, subject, body, from_address="info@riolet.com", headers=None, **kw):
+def sendmail(to_address, subject, body, from_address="noreply@riolet.com", headers=None, **kw):
     try:
         web.sendmail(from_address, to_address, subject, body, headers=headers, **kw)
     except OSError as e:
         print("Could not send mail.")
         print("OSError: {0}".format(e))
+    except smtplib.SMTPServerDisconnected as e:
+        print("Server Disconnected.")
+        print("SMTPServerDisconnected: {0}".format(e))
+    except Exception as e:
+        print("Other email error:")
+        print("{0.__class__}: {0}, {1}".format(e, e.message))
 
 
 class ValidationError(Exception):
@@ -117,7 +124,8 @@ uri_authority = config.get('domain', 'uri_authority')
 uri_prefix = "{0}://{1}".format(uri_scheme, uri_authority)
 
 # Configure session storage. Session variable is filled in from server.py
-web.config.session_parameters['cookie_domain'] = uri_authority
+# setting cookie_domain breaks local testing:
+# web.config.session_parameters['cookie_domain'] = uri_authority
 web.config.session_parameters['cookie_path'] = "/"
 session_store = web.session.DBStore(_db, 'sessions')
 session = None
