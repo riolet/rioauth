@@ -78,7 +78,7 @@ class Users:
 
     @staticmethod
     def validate_email(email):
-        return bool(re.match(r'^[^@]+@[^.@]+\.[^@]+$', email))
+        return bool(re.match(r'^[\w.]+@[\w]+\.[\w.]+$', email))
 
     @staticmethod
     def validate_name(name):
