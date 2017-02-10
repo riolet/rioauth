@@ -2,7 +2,10 @@
 
 FROM python:2.7.13-wheezy
 
-RUN ls && cp config.default config \
+WORKDIR /app
+COPY . /app
+
+RUN cp config.default config \
 && sed -i 's/https/http/i' config \
 && sed -i 's/www.example.com/provider-rioauth.hotbed.io/i' config \
 && sed -i 's/smtp.gmail.com/smtp.example.com/i' config
