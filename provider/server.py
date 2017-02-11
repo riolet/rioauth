@@ -19,8 +19,8 @@ if constants.DEBUG:
 # openssl req -x509 -sha256 -nodes -newkey rsa:2048 -days 365 -keyout localhost.key -out localhost.crt
 if constants.USE_TLS:
     from web.wsgiserver import CherryPyWSGIServer
-    CherryPyWSGIServer.ssl_certificate = os.path.join(constants.BASE_PATH, constants.config.get('constants', 'test_ssl_cert'))
-    CherryPyWSGIServer.ssl_private_key = os.path.join(constants.BASE_PATH, constants.config.get('constants', 'test_ssl_key'))
+    CherryPyWSGIServer.ssl_certificate = os.path.join(constants.BASE_PATH, constants.config.get('ssl', 'test_ssl_cert'))
+    CherryPyWSGIServer.ssl_private_key = os.path.join(constants.BASE_PATH, constants.config.get('ssl', 'test_ssl_key'))
 
 app = web.application(constants.urls, globals())
 
