@@ -1,12 +1,11 @@
 # To edit values locally, duplicate this file and name it "config" then edit that new file.
 
-[constants]
-debug = False
+[db]
 db_file = dev.db
 db_path = data
 
 [ssl]
-
+use_ssl = True
 test_ssl_cert = localhost.crt
 test_ssl_key = localhost.key
 
@@ -19,3 +18,6 @@ port = 587
 username = from_address@gmail.com
 password = secret
 starttls = True
+
+[debug]
+debug = False

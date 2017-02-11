@@ -7,16 +7,16 @@ config = ConfigParser.SafeConfigParser()
 config.read([os.path.join(BASE_PATH, 'config.default'),
              os.path.join(BASE_PATH, 'config')])
 
-DEBUG = config.get('constants', 'debug').lower() == 'true'
+DEBUG = config.get('debug', 'debug').lower() == 'true'
 
 # Used for database access
-DB_PATH = os.path.join(BASE_PATH, config.get('constants', 'db_path'))
-DB_FILENAME = config.get('constants', 'db_file')
+DB_PATH = os.path.join(BASE_PATH, config.get('db', 'db_path'))
+DB_FILENAME = config.get('db', 'db_file')
 
 # used in setting cookies
 REMEMBER_COOKIE_NAME = "rememberme"
 
-USE_TLS = config.get('domain', 'uri_scheme').lower() == 'https'
+USE_TLS = config.get('ssl', 'use_ssl').lower() == 'true'
 
 urls = [
     '/', 'pages.account.Account',
