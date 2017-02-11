@@ -14,7 +14,7 @@ class Login(base.Page):
 
     @staticmethod
     def get_domain():
-        domain = constants.uri_authority
+        domain = constants.domain
         prefix = domain.find('@')
         if prefix != -1:
             domain = domain[prefix + 1:]

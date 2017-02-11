@@ -10,6 +10,7 @@ test_ssl_cert = localhost.crt
 test_ssl_key = localhost.key
 
 [domain]
+domain = www.example.com
 base_url = https://www.example.com
 
 [smtp]
