@@ -5,14 +5,13 @@ debug = False
 db_file = dev.db
 db_path = data
 
-# for https during testing
+[ssl]
+
 test_ssl_cert = localhost.crt
 test_ssl_key = localhost.key
 
-
 [domain]
-uri_scheme = https
-uri_authority = www.example.com
+base_url = https://www.example.com
 
 [smtp]
 server = smtp.gmail.com
