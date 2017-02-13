@@ -1,3 +1,5 @@
+[![Build Status](https://jenkins-rioauth.hotbed.io/buildStatus/icon?job=rioauth-provider)](https://jenkins-rioauth.hotbed.io/job/rioauth-provider)
+
 # oauth for webpy
 
 This comes with two example programs, provider and consumer.
