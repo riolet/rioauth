@@ -45,17 +45,17 @@ def create_session_tables(db, base_path):
 
 
 def db_setup(db, base_path):
-    create_db(constants.DB_PATH, constants.DB_FILENAME)
-    db.query("PRAGMA foreign_keys = ON;")
+    if constants.DB_TYPE == 'sqlite':
+        create_db(constants.DB_PATH, constants.DB_FILENAME)
+        db.query("PRAGMA foreign_keys = ON;")
     create_tables(db, base_path)
     create_session_tables(db, base_path)
 
 
 def get_db():
-    db_path = os.path.join(constants.DB_PATH, constants.DB_FILENAME)
-
-    db = web.database(dbn='sqlite', db=db_path)
-
-    db_setup(db, constants.BASE_PATH)
-
-    return db
+        if constants.DB_TYPE == 'sqlite':
+            db = web.database(dbn='sqlite',db=os.path.join(constants.DB_PATH, constants.DB_FILENAME))
+        else:
+            db = web.database(dburl=constants.DB_URL)
+        db_setup(db, constants.BASE_PATH)
+        return db

@@ -222,7 +222,7 @@ DBPATH = ['data']
 DBFILENAME = 'dev.db'
 
 config = SafeConfigParser()
-config.read(["config.default", "config"])
+config.read(["default.cfg", "config"])
 
 CherryPyWSGIServer.ssl_certificate = "./" + config.get('ssl', 'certificate')
 CherryPyWSGIServer.ssl_private_key = "./" + config.get('ssl', 'key')

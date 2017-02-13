@@ -14,7 +14,7 @@ class Login(base.Page):
 
     @staticmethod
     def get_domain():
-        domain = constants.domain
+        domain = web.ctx.home
         prefix = domain.find('@')
         if prefix != -1:
             domain = domain[prefix + 1:]
@@ -111,4 +111,4 @@ class Login(base.Page):
         destination = '/'
         if 'login_redirect' in common.session:
             destination = common.session['login_redirect']
-        raise web.seeother(destination)
+        raise web.seeother(destination, absolute=True)
