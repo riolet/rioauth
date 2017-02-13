@@ -1,4 +1,6 @@
-[![Build Status](https://jenkins-rioauth.hotbed.io/buildStatus/icon?job=rioauth-provider)](https://jenkins-rioauth.hotbed.io/job/rioauth-provider)
+| Component  | Build Status  | Demo  |
+| ---  | ---  | ---  |
+| Provider  | [![Build Status](https://jenkins-rioauth.hotbed.io/buildStatus/icon?job=rioauth-provider)](https://jenkins-rioauth.hotbed.io/job/rioauth-provider)  | https://provider-rioauth.hotbed.io  |
 
 # oauth for webpy
 
