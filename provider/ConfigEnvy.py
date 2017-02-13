@@ -15,7 +15,8 @@ class ConfigEnvy(SafeConfigParser, object):
                 filenames.push(default_file_name)
             else:
                 filenames = default_file_name
-        super(ConfigEnvy, self).read(filenames)
+        if filenames is not None:
+            super(ConfigEnvy, self).read(filenames)
 
     def get(self, section, option, raw=False, vars=None, default=None):
         """Get an option value for a given section.
