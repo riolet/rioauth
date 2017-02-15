@@ -56,7 +56,7 @@ def response_from_error(e):
     raise web.BadRequest('<h1>Bad Request</h1><p>Error is: {0}</p>'.format(e.description))
 
 
-def sendmail(to_address, subject, body, from_address="noreply@riolet.com", headers=None, **kw):
+def sendmail(to_address, subject, body, from_address=constants.FROM_ADDRESS, headers=None, **kw):
     try:
         web.sendmail(from_address, to_address, subject, body, headers=headers, **kw)
     except OSError as e:
@@ -77,20 +77,6 @@ class ValidationError(Exception):
 class AuthenticationError(Exception):
     pass
 
-
-class SeeOther(web.Redirect):
-    def __init__(self, url, absolute=False):
-        if url[0] == '/':
-            url = constants.uri_prefix + url
-            absolute = True
-
-        log.debug("Redirecting (see other) to {0}".format(url))
-
-        web.Redirect.__init__(self, url, '303 See Other', absolute=absolute)
-
-web.seeother = SeeOther
-
-
 # Configure database access
 _db = dbsetup.get_db()
 users = Users(_db)
@@ -106,7 +92,7 @@ render = web.template.render(os.path.join(constants.BASE_PATH, 'templates'))
 
 # Configure Sendmail
 web.config.smtp_server = constants.config.get('smtp', 'server')
-web.config.smtp_port = int(constants.config.get('smtp', 'port'))
+web.config.smtp_port = int(constants.config.get('smtp', 'port',default='587'))
 web.config.smtp_username = constants.config.get('smtp', 'username')
 web.config.smtp_password = constants.config.get('smtp', 'password')
 web.config.smtp_starttls = constants.config.get('smtp', 'starttls').lower() == 'true'

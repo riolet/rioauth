@@ -1,22 +1,33 @@
 import os
-import ConfigParser
+import urllib
+import urlparse
+
+from ConfigEnvy import ConfigEnvy
+
+
+config = ConfigEnvy('RIOAUTH_PROVIDER')
+
+DEBUG = config.get('debug', 'debug', default='False').lower() == 'true'
 
 BASE_PATH = os.path.dirname(__file__)
 
-config = ConfigParser.SafeConfigParser()
-config.read([os.path.join(BASE_PATH, 'config.default'),
-             os.path.join(BASE_PATH, 'config')])
-
-DEBUG = config.get('debug', 'debug').lower() == 'true'
-
 # Used for database access
-DB_PATH = os.path.join(BASE_PATH, config.get('db', 'db_path'))
-DB_FILENAME = config.get('db', 'db_file')
+if not config.has_option('db','db_url') or config.get('db', 'db_url').startswith('sqlite'):
+    DB_TYPE = 'sqlite'
+    DB_URL = config.get('db', 'db_url', default="sqlite:///tmp/rioauth/provider.db")
+    parts = urlparse.urlparse(urllib.unquote(DB_URL))
+    DB_PATH = '/'.join(parts.path.split('/')[:-1])
+    if not DB_PATH.startswith('/'):
+        DB_PATH = os.path.join(BASE_PATH, DB_PATH)
+    DB_FILENAME = parts.path[1:].split('/')[-1]
+else:
+    DB_TYPE = 'not_sqlite'
+    DB_URL = config.get('db', 'db_url')
 
 # used in setting cookies
 REMEMBER_COOKIE_NAME = "rememberme"
 
-USE_TLS = config.get('ssl', 'use_ssl').lower() == 'true'
+USE_TLS = config.get('ssl', 'use_ssl', default='False').lower() == 'true'
 
 urls = [
     '/', 'pages.account.Account',
@@ -35,10 +46,5 @@ urls = [
 if DEBUG:
     urls.extend(['/_debug_', 'pages.test.Env'])
 
+FROM_ADDRESS = config.get('email', 'from_address', default='noreply@example.com')
 
-# Configure paths
-# This is defined for crafting absolute paths because relative
-# redirects using web.seeother() were giving ugly URIs like
-# "https://example.com/wsgipython.py/login"
-uri_prefix = config.get('domain', 'base_url')
-domain = config.get('domain', 'domain')

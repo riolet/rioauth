@@ -20,7 +20,7 @@ class Register(base.Page):
         key = common.email_loopback.add(user_id, '/login', duration=duration)
         subject = "Riolet Registration"
         link = "{uri_prefix}/confirmemail?key={key}".format(
-            uri_prefix=constants.uri_prefix,
+            uri_prefix=web.ctx.home,
             key=key)
         body = """
 Hello, {name}
