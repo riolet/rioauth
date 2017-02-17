@@ -40,7 +40,7 @@ class Resource(base.Page):
         self.headers['Authorization'] = self.headers.pop('HTTP_AUTHORIZATION', '')
 
         # raises 403 Forbidden if authentication fails.
-        self.require_oauthentication(self.oauthServer, scopes_required=['basic'])
+        self.require_oauthentication(self.oauthServer)
 
         print("Resource is Authorized!")
         self.app_id = self.request.client_id
