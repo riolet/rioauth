@@ -59,7 +59,7 @@ class Applications(object):
 
     def get_all(self):
         rows = self.db.select(self.table, what="app_id, owner_id, nicename, scopes, "
-                                               "redirect_uris, default_scopes, default_redirect_uri")
+                                               "redirect_uris, default_scopes, default_redirect_uri, preapprove")
         return list(rows)
 
     def get(self, application_id):
@@ -81,7 +81,7 @@ class Applications(object):
         deleted_rows = self.db.delete(self.table, where='app_id=$aid', vars=qvars)
         return deleted_rows == 1
 
-    def add(self, name, owner_id, scopes, redirect_uris, default_scopes=None, default_redirect_uri=None):
+    def add(self, name, owner_id, scopes, redirect_uris, default_scopes=None, default_redirect_uri=None, preapprove=False):
         """
         :param name: string; nice name for app
         :param owner_id: id of application registrant (owner)
@@ -89,13 +89,16 @@ class Applications(object):
         :param redirect_uris: list; List of uris that can be redirected to after login.
         :param default_scopes: list; optional; Default scopes to grant if none requested.
         :param default_redirect_uri: list; optional; link to redirect to after login if none supplied.
+        :param preapprove: boolean; optional; application automatically
+            connects to account without additional permission request.
         :return: the id of the newly created app
         """
         qvars = {
             'nicename': name,
             'owner_id': owner_id,
             'scopes': " ".join(scopes),
-            'redirect_uris': " ".join(redirect_uris)
+            'redirect_uris': " ".join(redirect_uris),
+            'preapprove': '1' if preapprove else '0'
         }
         if default_scopes:
             qvars['default_scopes'] = " ".join(default_scopes)

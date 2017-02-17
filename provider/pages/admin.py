@@ -16,7 +16,7 @@ class Admin(base.AdminPage):
             self.errors.append("Could not read all fields when adding user")
             return
         try:
-            common.users.add(email, password, name=name, groups=groups)
+            common.users.add(email, password, name=name, groups=groups, email_confirmed='1')
         except:
             self.errors.append("Error adding new user")
         else:
@@ -49,7 +49,7 @@ class Admin(base.AdminPage):
             self.errors.append("Could not read all fields when adding application")
             return
         try:
-            common.applications.add(nicename, owner_id, scopes, uris, def_scopes, def_uri)
+            common.applications.add(nicename, owner_id, scopes, uris, def_scopes, def_uri, preapprove=True)
         except:
             self.errors.append("Error adding new application")
         else:

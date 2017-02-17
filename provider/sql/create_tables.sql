@@ -23,6 +23,7 @@ CREATE TABLE IF NOT EXISTS Subscriptions
 , app_id            CHAR(8) NOT NULL
 , user_id           INTEGER NOT NULL
 , status            TEXT DEFAULT "active"
+, preapprove        CHAR(1) NOT NULL DEFAULT '0'
 , subscription_type TEXT
 , CONSTRAINT pk_S_aiui UNIQUE (`app_id`, `user_id`)
 , CONSTRAINT fk_S_ai FOREIGN KEY (`app_id`) REFERENCES `Applications`(`app_id`)
