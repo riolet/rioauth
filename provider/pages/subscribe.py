@@ -43,6 +43,13 @@ class Subscribe(base.LoggedInPage):
     def get_sub(user_id, app_id):
         return common.subscriptions.get(app_id, user_id)
 
+    def redirect_back(self):
+        destination = '/'
+        if 'subscribe_redirect' in common.session:
+            destination = common.session['subscribe_redirect']
+        raise web.seeother(destination)
+
+
     def GET(self):
         common.session['subscribe_app'] = self.app.app_id
 
@@ -51,14 +58,15 @@ class Subscribe(base.LoggedInPage):
         # if subscription exists and is active: redirect to destination
         subscription = common.subscriptions.get(self.app['app_id'], self.user['id'])
         if not subscription:
-            return common.render.subscribe(self.user, self.app, "create", self.errors)
+            if self.app['preapprove'] == '1':
+                self.add_sub(self.app['app_id'], self.user['id'])
+                self.redirect_back()
+            else:
+                return common.render.subscribe(self.user, self.app, "create", self.errors)
         elif subscription['status'] != 'active':
             return common.render.subscribe(self.user, self.app, "enable", self.errors)
         else:
-            destination = '/'
-            if 'subscribe_redirect' in common.session:
-                destination = common.session['subscribe_redirect']
-            raise web.seeother(destination)
+            self.redirect_back()
 
     def POST(self):
         action = self.data.get('action', None)
@@ -77,7 +85,4 @@ class Subscribe(base.LoggedInPage):
         if self.errors:
             return common.render.subscribe(self.user, self.app, self.errors)
 
-        destination = '/'
-        if 'subscribe_redirect' in common.session:
-            destination = common.session['subscribe_redirect']
-        raise web.seeother(destination)
+        self.redirect_back()
