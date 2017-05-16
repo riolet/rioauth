@@ -83,6 +83,7 @@ class Authorization(object):
             verify=True)
 
         self.save_token(token)
+        return token
 
     def request(self, protected_url):
         extra = {

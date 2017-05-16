@@ -23,11 +23,8 @@ class Login(base.Page):
             default_scope_requested=constants.config.get('github', 'request_scope'))
 
     def get_token(self):
-        authorization_response = "{scheme}://{host}{port}{path}".format(
-            scheme=web.ctx.env.get('wsgi.url_scheme', 'https'),
-            host=web.ctx.env['SERVER_NAME'],
-            port=':{0}'.format(web.ctx.env['SERVER_PORT']),
-            path=web.ctx.env['REQUEST_URI'])
+        authorization_response = self.uri
+
         try:
             # redirect_uri must match between get_auth_code and get_token.
             # scope must match between get_auth_code and get_token
@@ -53,14 +50,30 @@ class Login(base.Page):
         self.redirect(authorization_url)
 
     def login(self):
-        resource = self.oauth.request(constants.config.get('github', 'resource_url'))
-        pprint.pprint(resource)
+        public_emails = self.oauth.request(constants.config.get('github', 'resource_url'))
 
-        user = common.users.get_by_email()
+        # Public emails should retrieve a list of dicts of emails addresses:
+        # [{u'email': u'jdoe@example.com',
+        #   u'primary': True,
+        #   u'verified': True,
+        #   u'visibility': u'public'}]
+
+        if len(public_emails) == 0:
+            return False
+        email = public_emails[0]['email']
+        for em in public_emails:
+            if em['primary'] is True:
+                email = em['email']
+                break
+
+        user = common.users.get_by_email(email)
         if user is None:
             # create user for that email!
-            self.errors.append("User didn't exist.")
-            return False
+            # random password. Nobody should know it, ever. Login is done through GitHub.
+            # If user wants to choose password, they will reset it anyway.
+            user_id = common.users.add(email, common.generate_salt(32), email)
+
+            user = common.users.get_by_id(user_id)
         self.user = user
         return True
 
