@@ -76,13 +76,11 @@ class Authorization(object):
             self.client_id, redirect_uri=redirect_uri, scope=scope
         )
 
-        # TODO: re-enable verify (for SSL)
         token = oauth.fetch_token(
             self.token_url,
             authorization_response=authorization_response_url,
             client_secret=self.client_secret,
-            verify=False)
-
+            verify=True)
 
         self.save_token(token)
 
@@ -99,8 +97,7 @@ class Authorization(object):
             auto_refresh_kwargs = extra,
             token_updater = self.save_token)
 
-        # TODO: re-enable verify (for SSL)
-        response = oauth.get(protected_url, verify=False)
+        response = oauth.get(protected_url, verify=True)
         try:
             decoded_response = json.loads(response.content)
         except ValueError:
