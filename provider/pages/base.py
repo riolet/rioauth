@@ -22,19 +22,21 @@ class Page(object):
 
     @staticmethod
     def reconstruct_uri():
-        url = web.ctx.environ['wsgi.url_scheme'] + '://'
+        url = constants.BASE_URL
+        if not url:
+            url = web.ctx.environ['wsgi.url_scheme'] + '://'
 
-        if web.ctx.environ.get('HTTP_HOST'):
-            url += web.ctx.environ['HTTP_HOST']
-        else:
-            url += web.ctx.environ['SERVER_NAME']
-
-            if web.ctx.environ['wsgi.url_scheme'] == 'https':
-                if web.ctx.environ['SERVER_PORT'] != '443':
-                    url += ':' + web.ctx.environ['SERVER_PORT']
+            if web.ctx.environ.get('HTTP_HOST'):
+                url += web.ctx.environ['HTTP_HOST']
             else:
-                if web.ctx.environ['SERVER_PORT'] != '80':
-                    url += ':' + web.ctx.environ['SERVER_PORT']
+                url += web.ctx.environ['SERVER_NAME']
+
+                if web.ctx.environ['wsgi.url_scheme'] == 'https':
+                    if web.ctx.environ['SERVER_PORT'] != '443':
+                        url += ':' + web.ctx.environ['SERVER_PORT']
+                else:
+                    if web.ctx.environ['SERVER_PORT'] != '80':
+                        url += ':' + web.ctx.environ['SERVER_PORT']
 
         # This one causes problems when deployed using WSGI
         #url += quote(web.ctx.environ.get('SCRIPT_NAME', ''))
@@ -143,7 +145,7 @@ class Page(object):
 class LoggedInPage(Page):
     def __init__(self, title):
         Page.__init__(self, title)
-        self.require_login(quote(web.ctx.environ.get('PATH_INFO', '/')))
+        self.require_login(self.uri)
 
 
 class AdminPage(LoggedInPage):
