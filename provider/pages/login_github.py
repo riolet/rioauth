@@ -91,13 +91,15 @@ class Login(base.Page):
             if self.get_token():
                 print("get_token returned True. setting logged_in to True")
                 success = self.login()
-                if success:
-                    common.session['logged_in'] = True
-                    common.session['user_id'] = self.user['id']
-                    self.redirect('/account')
-                else:
+                if not success:
                     print("should render page with errors: {}".format(self.errors))
                     self.redirect('/login')
+                common.session['logged_in'] = True
+                common.session['user_id'] = self.user['id']
+                destination = '/'
+                if 'login_redirect' in common.session:
+                    destination = common.session['login_redirect']
+                self.redirect(destination, absolute=True)
             else:
                 print("get_token returned False. setting logged_in to False")
                 common.session['logged_in'] = False
