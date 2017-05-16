@@ -60,7 +60,6 @@ class Users:
         valid = False
         user = self.get_by_id(user_id)
         if user:
-            print("memory of user found")
             saved_token = user.remember_token
             saved_key = user.secret_key
             dk = hashlib.pbkdf2_hmac('sha256', "{0}:{1}".format(user_id, saved_token), saved_key, 100000)
@@ -68,7 +67,6 @@ class Users:
             matches = hmac.compare_digest("{0}:{1}:{2}".format(user_id, token, cookie_hash),
                                           "{0}:{1}:{2}".format(user_id, saved_token, ascii_hash))
             if matches:
-                print("user codes match! User is remembered")
                 valid = True
         return valid
 
