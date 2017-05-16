@@ -13,14 +13,29 @@ class Login(base.Page):
         self.user = None
 
     @staticmethod
-    def get_domain():
-        domain = web.ctx.home
+    def get_domain(uri):
+        # remove scheme
+        entrance = uri.find("://")
+        if entrance != -1:
+            domain = uri[entrance+3:]
+        else:
+            domain = uri
+
+        # remove login info
         prefix = domain.find('@')
         if prefix != -1:
             domain = domain[prefix + 1:]
+
+        # remove port info
         suffix = domain.find(":")
         if suffix != -1:
             domain = domain[:suffix]
+
+        # remove any path info
+        path = domain.find("/")
+        if path != -1:
+            domain = domain[:path]
+
         return domain
 
     @staticmethod
@@ -29,10 +44,11 @@ class Login(base.Page):
         name = constants.REMEMBER_COOKIE_NAME
         value = common.users.get_login_cookie(account_id)
         duration = 31536000  # 60*60*24*365 # 1 year-ish
-        domain = Login.get_domain()
+        domain = Login.get_domain(web.ctx.home)
         path = '/'
         secure = constants.USE_TLS  # only send if connection is secure
         httponly = True  # do not share with client javascript
+        log.debug("Cookie: name:{}, value:{}, domain:{}, secure:{}, httponly:{}, path:{}".format(name, value, domain, secure, httponly, path))
         web.setcookie(name, value, duration, domain, secure, httponly, path)
 
     @staticmethod
