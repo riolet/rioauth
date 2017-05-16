@@ -48,7 +48,9 @@ urls = [
     '/resource', 'pages.resource.Resource',
     '/resetpassword', 'pages.resetpassword.ResetPassword',
     '/changepassword', 'pages.changepassword.ChangePassword',
-    '/confirmemail', 'pages.confirmemail.ConfirmEmail'
+    '/confirmemail', 'pages.confirmemail.ConfirmEmail',
+
+    '/login_github', 'pages.login_github.Login',
 ]
 if DEBUG:
     urls.extend(['/_debug_', 'pages.test.Env'])

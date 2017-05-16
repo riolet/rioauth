@@ -27,6 +27,8 @@ $def with (server_errors=None, new_register=False)
         Log-in to your account
       </div>
     </h2>
+
+    <!-- Info messages -->
     $if new_register:
       <div class="ui attached success message">
         <div class="header">
@@ -34,6 +36,8 @@ $def with (server_errors=None, new_register=False)
         </div>
         <p>Please check your email for a confirmation link before logging in.</p>
       </div>
+
+    <!-- Login form -->
     <form class="ui large attached form" method="POST" action="/login">
       <div class="ui stacked segment">
         <div class="field">
@@ -58,6 +62,8 @@ $def with (server_errors=None, new_register=False)
       </div>
       <div class="ui error message"></div>
     </form>
+
+    <!-- Extra messages -->
     <div class="ui message">
       <div class="ui two column grid">
         <div class="column">
@@ -68,6 +74,13 @@ $def with (server_errors=None, new_register=False)
         </div>
       </div>
     </div>
+
+    <!-- GitHub link -->
+    <form class="ui large attached form" method="GET" action="/login_github">
+      <div class="ui stacked segment">
+        <div class="ui fluid large teal submit button">Login via GitHub</div>
+      </div>
+    </form>
   </div>
 </div>
 </body>
