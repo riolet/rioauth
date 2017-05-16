@@ -73,7 +73,6 @@ class Page(object):
         raise web.seeother(path, absolute)
 
     def require_login(self, return_uri):
-        print("login is required for this page.")
         if not self.is_logged_in():
             common.session['login_redirect'] = return_uri
             self.redirect('/login')
@@ -144,7 +143,7 @@ class Page(object):
 class LoggedInPage(Page):
     def __init__(self, title):
         Page.__init__(self, title)
-        self.require_login(self.uri)
+        self.require_login(quote(web.ctx.environ.get('PATH_INFO', '/')))
 
 
 class AdminPage(LoggedInPage):
