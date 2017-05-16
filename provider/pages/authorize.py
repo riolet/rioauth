@@ -31,7 +31,7 @@ class Authorize(base.LoggedInPage):
             return common.response_from_error(e)
         # Errors embedded in the redirect URI back to the client
         except errors.OAuth2Error as e:
-            raise web.seeother(e.in_uri(e.redirect_uri))
+            self.redirect(e.in_uri(e.redirect_uri))
 
         self.client_id = self.credentials['client_id']
 

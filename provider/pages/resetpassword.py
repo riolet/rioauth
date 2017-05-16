@@ -110,7 +110,7 @@ Riolet Corporation
         intention = self.data.get("intention")
 
         if intention not in ['resend', 'update']:
-            raise web.seeother('/')
+            self.redirect('/')
 
         if intention == 'resend':
             success = self.resend()
@@ -129,4 +129,4 @@ Riolet Corporation
                 return common.render.resetpassword(self.user, self.loopback, self.offer_resend, self.errors)
 
         else:
-            web.seeother('/')
+            self.redirect('/')

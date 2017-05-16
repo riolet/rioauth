@@ -1,8 +1,6 @@
-import re
 import web
 import common
 import base
-import constants
 
 
 class Register(base.Page):
@@ -60,4 +58,4 @@ Riolet
         self.send_conf_email(self.user_id, name, email)
 
         # send them back to the login page
-        web.seeother('/login?register=success')
+        self.redirect('/login?register=success')

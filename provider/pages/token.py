@@ -21,4 +21,3 @@ class Token(base.Page):
 
         # All requests to /token will return a json response, no redirection.
         return common.response_from_return(headers, body, status)
-

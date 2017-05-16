@@ -11,6 +11,13 @@ DEBUG = config.get('debug', 'debug', default='False').lower() == 'true'
 
 BASE_PATH = os.path.dirname(__file__)
 
+# for controlling redirection.
+BASE_URL = config.get('path', 'base_url', default=None)
+if not BASE_URL:
+    BASE_URL = None
+elif BASE_URL[-1] == "/":
+    BASE_URL = BASE_URL[:-1]
+
 # Used for database access
 if not config.has_option('db','db_url') or config.get('db', 'db_url').startswith('sqlite'):
     DB_TYPE = 'sqlite'

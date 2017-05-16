@@ -10,7 +10,7 @@ class Subscribe(base.LoggedInPage):
         self.app = self.get_app()
 
         if not self.user or not self.app:
-            raise web.seeother('/')
+            self.redirect('/')
 
     def get_app(self):
         app_id = self.data.get('app_id', None) or common.session.get('subscribe_app', None)
@@ -47,7 +47,7 @@ class Subscribe(base.LoggedInPage):
         destination = '/'
         if 'subscribe_redirect' in common.session:
             destination = common.session['subscribe_redirect']
-        raise web.seeother(destination)
+        self.redirect(destination)
 
 
     def GET(self):

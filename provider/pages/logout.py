@@ -24,4 +24,4 @@ class Logout(base.Page):
             destination = common.session['logout_redirect']
 
         common.session.kill()
-        web.seeother(destination)
+        self.redirect(destination)

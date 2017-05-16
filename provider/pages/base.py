@@ -67,10 +67,16 @@ class Page(object):
         else:
             return False
 
+    def redirect(self, path, absolute=False):
+        if path[0] == '/' and constants.BASE_URL is not None:
+            path = constants.BASE_URL + path
+        raise web.seeother(path, absolute)
+
     def require_login(self, return_uri):
+        print("login is required for this page.")
         if not self.is_logged_in():
             common.session['login_redirect'] = return_uri
-            raise web.seeother("/login")
+            self.redirect('/login')
         else:
             common.session.pop('login_redirect', None)
         return self.user_id
@@ -86,7 +92,7 @@ class Page(object):
     def require_subscribed(self, user_id, app_id, return_uri):
         if not self.is_subscribed(user_id, app_id):
             common.session['subscribe_redirect'] = return_uri
-            raise web.seeother('/subscribe?app_id={0}'.format(app_id))
+            self.redirect('/subscribe?app_id={0}'.format(app_id))
         else:
             common.session.pop('subscribe_redirect', None)
         return self.subscription_id
@@ -107,7 +113,7 @@ class Page(object):
 
     def require_group(self, user, group, fail_uri):
         if not self.is_in_group(user, group):
-            raise web.seeother(fail_uri)
+            self.redirect(fail_uri)
 
     @staticmethod
     def get_user_data(user_id):

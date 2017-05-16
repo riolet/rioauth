@@ -88,7 +88,7 @@ class Login(base.Page):
             destination = '/'
             if 'login_redirect' in common.session:
                 destination = common.session['login_redirect']
-            raise web.seeother(destination)
+            self.redirect(destination)
 
         # show login page
         if 'register' in self.data and self.data['register'] == 'success':
@@ -111,4 +111,4 @@ class Login(base.Page):
         destination = '/'
         if 'login_redirect' in common.session:
             destination = common.session['login_redirect']
-        raise web.seeother(destination, absolute=True)
+        self.redirect(destination, absolute=True)
