@@ -49,6 +49,7 @@ urls = [
     '/resetpassword', 'pages.resetpassword.ResetPassword',
     '/changepassword', 'pages.changepassword.ChangePassword',
     '/confirmemail', 'pages.confirmemail.ConfirmEmail',
+    '/terms', 'pages.terms.Terms',
 
     '/login_github', 'pages.login_github.Login',
 ]
