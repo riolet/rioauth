@@ -50,28 +50,29 @@ class Login(base.Page):
         self.redirect(authorization_url)
 
     def login(self):
-        public_emails = self.oauth.request(constants.config.get('google', 'resource_url'))
+        user_info = self.oauth.request(constants.config.get('google', 'resource_url'))
 
-        # Public emails should retrieve a list of dicts of emails addresses:
-        # [{u'email': u'jdoe@example.com',
-        #   u'primary': True,
-        #   u'verified': True,
-        #   u'visibility': u'public'}]
+        # user_info should be a dict like the following:
+        # {
+        #  "family_name": "Doe",
+        #  "name": "J Doe",
+        #  "picture": "https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg",
+        #  "email": "jdoe@example.com",
+        #  "given_name": "J",
+        #  "id": "112792919567704030902",
+        #  "hd": "example.com",
+        #  "verified_email": true
+        # }
 
-        if len(public_emails) == 0:
-            return False
-        email = public_emails[0]['email']
-        for em in public_emails:
-            if em['primary'] is True:
-                email = em['email']
-                break
+        email = user_info['email']
+        name = user_info['name']
 
         user = common.users.get_by_email(email)
         if user is None:
             # create user for that email!
             # random password. Nobody should know it, ever. Login is done through Google.
             # If user wants to choose password, they will reset it anyway.
-            user_id = common.users.add(email, common.generate_salt(32), email)
+            user_id = common.users.add(email, common.generate_salt(32), name)
             user = common.users.get_by_id(user_id)
         self.user = user
         return True

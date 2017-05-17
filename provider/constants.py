@@ -52,6 +52,7 @@ urls = [
     '/terms', 'pages.terms.Terms',
 
     '/login_github', 'pages.login_github.Login',
+    '/login_google', 'pages.login_google.Login',
 ]
 if DEBUG:
     urls.extend(['/_debug_', 'pages.test.Env'])
