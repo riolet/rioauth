@@ -17,7 +17,11 @@ class Account(base.LoggedInPage):
         return common.render.account(self.user_data, self.is_admin)
 
     def GET(self):
-        return self.render_page()
+        try:
+            page = self.render_page()
+        except:
+            page = common.render.message(error=['Error accessing account. Please try logging in again'], buttons=[('Login page', '/logout')])
+        return page
 
     def POST(self):
         if 'enable_sub' in self.data:
