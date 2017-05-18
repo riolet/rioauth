@@ -77,14 +77,6 @@ class Login(base.Page):
         self.user = user
         return True
 
-    def errorpage(self):
-        head = """<!DOCTYPE html><html lang="en-CA"><head><meta charset="utf-8"/><title>Errors</title></head><body>\n<table>\n"""
-        foot = """</table>\n</body></html>"""
-        body = ""
-        for k, v in self.data.items:
-            body += "<tr><td>{key}</td><td>{value}</td></tr>\n".format(key=k, value=v)
-        return head+body+foot
-
     def GET(self):
         if 'state' in self.data and 'code' in self.data:
             print("state and code found. Assuming to be at fetch_token step.")
@@ -108,9 +100,7 @@ class Login(base.Page):
             print("Error response.\n\t{0}".format(self.data['error']))
             if 'error_description' in self.data:
                 print("\t{0}".format(self.data['error_description']))
-            # TODO: have destination page indicate to user that an error has occurred.
-            # self.redirect('/login')
-            return self.errorpage()
+            return common.render.message(error=['Error logging in via GitHub.', 'Error: {}'.format(self.data['error_description'])], buttons=[('Login page', '/logout')])
         else:
             print("begin authentication process.")
             self.get_auth_code()
