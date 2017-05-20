@@ -1,8 +1,7 @@
-<!--
 | Component  | Build Status  | Demo  |
 | ---  | ---  | ---  |
 | Provider  | [![Build Status](https://jenkins-rioauth.hotbed.io/buildStatus/icon?job=rioauth-provider)](https://jenkins-rioauth.hotbed.io/job/rioauth-provider)  | https://provider-rioauth.hotbed.io  |
--->
+
 # RioAuth
 
 RioAuth is an authentication server written in python, implementing of the oauth2 protocol 
